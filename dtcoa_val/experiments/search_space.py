@@ -110,14 +110,23 @@ def _restricted(exclude):
 
 ROVA_ABLATIONS = {
     # memory ablation: does temporal integration (trust/EWMA) contribute?
+    # NOTE (FIX-1, ABLATION-001): e_min is NOT dropped here. Disabling memory
+    # (use_trust=False) kills only e_min's memory/decay path (the clow
+    # accumulator, consumed solely inside `if self.use_trust:` in
+    # dtcoa_tunable.py); e_min stays behaviorally active via the independent
+    # propagation path (`obs_fail = E < e_min` -> prop_pen, gated by use_prop),
+    # so it must be re-tuned in coupled environments. See EMIN_ANALYSIS.
     "no_memory": {
         "fixed_kwargs": {"use_trust": False},
-        "search_space": _restricted({"alpha", "gamma", "e_min", "k"}),
+        "search_space": _restricted({"alpha", "gamma", "k"}),
     },
     # decay ablation: does the forgetting submechanism contribute beyond plain memory?
+    # NOTE (FIX-1, ABLATION-001): e_min is NOT dropped here either. Disabling
+    # decay (use_decay=False) removes only the clow>=k decay trigger; e_min
+    # remains active via the same propagation path, so it stays tunable.
     "no_decay": {
         "fixed_kwargs": {"use_decay": False},
-        "search_space": _restricted({"gamma", "e_min", "k"}),
+        "search_space": _restricted({"gamma", "k"}),
     },
     # propagation ablation: does network-failure awareness contribute?
     "no_propagation": {
