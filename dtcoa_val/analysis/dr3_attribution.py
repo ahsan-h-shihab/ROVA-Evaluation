@@ -134,6 +134,17 @@ def build_summary(ablation_out, envs=None, grid=None, driver_report_dir=None):
         "regime_boundary": {"low_max": LOW_REGIME_MAX, "high_min": HIGH_REGIME_MIN,
                             "transition_note": "cost ratios strictly between are 'transition'"},
         "wording_policy": NOT_DETECTED,
+        # The per-cell 'attributed' flags below come from the frozen per-cell
+        # test (Wilcoxon over 5 folds + Holm across 4 components), which has
+        # STRUCTURALLY ZERO power at K_out=5 (min achievable p = 0.0625 > the
+        # 0.0125 Holm threshold) -- it can never flag a component even under a
+        # maximal signal. This module is therefore DESCRIPTIVE ONLY (per-cell
+        # effect sizes + containment). The authoritative regime-level attribution
+        # inference is dr3_regime_inference.py (Option B primary + Option C).
+        "per_cell_test_power_warning": (
+            "per-cell 'attributed' flags have zero power at K_out=5; descriptive "
+            "only. Use dr3_regime_inference for valid attribution."),
+        "authoritative_inference": "dtcoa_val.analysis.dr3_regime_inference",
         "regime_rollup": rollup,
         "cells": cells,
     }
@@ -174,9 +185,14 @@ def render_markdown_table(summary):
     A (attributed) / - (not detected)."""
     cells = summary["cells"]
     tags = sorted(cells, key=lambda t: (cells[t]["env"], cells[t]["cost_ratio"]))
-    lines = ["# ABLATION-001 DR3 Mechanism Attribution\n",
+    lines = ["# ABLATION-001 DR3 Mechanism Attribution (DESCRIPTIVE per-cell)\n",
+             "> WARNING: the per-cell 'A'/'-' flags below use the frozen per-cell "
+             "test, which has ZERO statistical power at K_out=5 (it can never flag "
+             "a component even under a maximal signal). This table is DESCRIPTIVE "
+             "(effect sizes) only. The valid regime-level attribution is in "
+             "dr3_regime_inference (Option B + C).\n",
              f"Cells: {summary['n_cells']}/{summary['n_expected']}. "
-             f"'A' = contributes (significant + non-negligible); "
+             f"'A' = per-cell Holm flag (structurally always '-' at this budget); "
              f"'-' = {NOT_DETECTED}.\n",
              "| Mechanism | " + " | ".join(tags) + " |",
              "|" + "---|" * (len(tags) + 1)]
@@ -186,7 +202,9 @@ def render_markdown_table(summary):
             row.append("A" if cells[t]["attribution"][comp]["attributed"] else "-")
         lines.append("| " + " | ".join(row) + " |")
     r = summary["regime_rollup"]
-    lines += ["\n## Regime-stratified rollup (H2)\n",
+    lines += ["\n## Regime-stratified rollup (H2) — DESCRIPTIVE COUNTS ONLY\n",
+              "> These are counts of the zero-power per-cell flags; they are NOT "
+              "the H2 inference. See dr3_regime_inference for the valid test.\n",
               "| Mechanism | low (c<=1.5) | transition (c=3.5) | high (c>=8.0) |",
               "|---|---|---|---|"]
     for comp in COMPONENTS:
