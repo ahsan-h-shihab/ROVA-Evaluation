@@ -1,0 +1,141 @@
+{
+  "per_fold": [
+    {
+      "outer_fold": 0,
+      "config": {
+        "alpha": 0.9892170499770145,
+        "gamma": 0.9852223072712627,
+        "e_min": 0.22376894995223506,
+        "k": 1,
+        "context_risk": 0.44004906065203486,
+        "bands": [
+          0.6611738293484972,
+          0.7383185631696839,
+          0.7998419821868038,
+          0.908685994125842,
+          0.9400770865068339
+        ],
+        "prop_scale": 0.008207074563433534,
+        "stab_scale": 0.0,
+        "s_min": 0.6365587568491892
+      },
+      "in_distribution_mean_regret": 0.09050881496350077,
+      "in_distribution_cvar95": 0.11217922325426712,
+      "shifted_mean_regret": 0.07162896139151015,
+      "shifted_cvar95": 0.20924373918675945,
+      "regret_delta_under_shift": -0.018879853571990624
+    },
+    {
+      "outer_fold": 1,
+      "config": {
+        "alpha": 0.4467125088685271,
+        "gamma": 0.1606361536207237,
+        "e_min": 0.1725253677732816,
+        "k": 9,
+        "context_risk": 0.45424763829958087,
+        "bands": [
+          0.3338511098301048,
+          0.450337828213774,
+          0.5899565661939121,
+          0.7698208255473435,
+          0.950765474140941
+        ],
+        "prop_scale": 0.04996595963780364,
+        "stab_scale": 0.46352844030281043,
+        "s_min": 0.1749922145526173
+      },
+      "in_distribution_mean_regret": 0.07446652528144525,
+      "in_distribution_cvar95": 0.11131589259189784,
+      "shifted_mean_regret": 0.06879607206816572,
+      "shifted_cvar95": 0.1490372511919371,
+      "regret_delta_under_shift": -0.005670453213279525
+    },
+    {
+      "outer_fold": 2,
+      "config": {
+        "alpha": 0.7828532348255275,
+        "gamma": 0.382811607176553,
+        "e_min": 0.3812834464034927,
+        "k": 8,
+        "context_risk": 0.465085264528231,
+        "bands": [
+          0.3942850531846529,
+          0.46803571385537984,
+          0.5365512596385563,
+          0.6908605535269049,
+          0.8030128615852458
+        ],
+        "prop_scale": 0.0016381424555258213,
+        "stab_scale": 0.7760626653769708,
+        "s_min": 0.9224705742958481
+      },
+      "in_distribution_mean_regret": 0.06818387248083681,
+      "in_distribution_cvar95": 0.09157297326774662,
+      "shifted_mean_regret": 0.06912562034449282,
+      "shifted_cvar95": 0.17958102359189831,
+      "regret_delta_under_shift": 0.0009417478636560145
+    },
+    {
+      "outer_fold": 3,
+      "config": {
+        "alpha": 0.7925112192742074,
+        "gamma": 0.5104409520997603,
+        "e_min": 0.27526366731280166,
+        "k": 1,
+        "context_risk": 0.014725204377554979,
+        "bands": [
+          0.636027745173133,
+          0.7587744846650246,
+          0.8127020010269213,
+          0.8695756142350444,
+          0.9488540853359666
+        ],
+        "prop_scale": 0.0,
+        "stab_scale": 0.1627968764779258,
+        "s_min": 0.278366897695005
+      },
+      "in_distribution_mean_regret": 0.0749942902091751,
+      "in_distribution_cvar95": 0.09894777509045363,
+      "shifted_mean_regret": 0.0715979843126891,
+      "shifted_cvar95": 0.1776048364992239,
+      "regret_delta_under_shift": -0.003396305896485999
+    },
+    {
+      "outer_fold": 4,
+      "config": {
+        "alpha": 0.144474272360535,
+        "gamma": 0.41028390867795717,
+        "e_min": 0.520821040000114,
+        "k": 6,
+        "context_risk": 0.29563074014707036,
+        "bands": [
+          0.5035233439423015,
+          0.5832940410080528,
+          0.746858386422929,
+          0.9062157076850116,
+          0.9134289505656293
+        ],
+        "prop_scale": 2.4343647792035283,
+        "stab_scale": 0.0,
+        "s_min": 0.0788903907433381
+      },
+      "in_distribution_mean_regret": 0.06170206765089938,
+      "in_distribution_cvar95": 0.09858956714369932,
+      "shifted_mean_regret": 0.047555094161261954,
+      "shifted_cvar95": 0.12920953159506074,
+      "regret_delta_under_shift": -0.014146973489637428
+    }
+  ],
+  "summary": {
+    "mean_regret_delta_under_shift": -0.008230367661547512,
+    "max_regret_delta_under_shift": 0.0009417478636560145,
+    "per_fold_deltas": [
+      -0.018879853571990624,
+      -0.005670453213279525,
+      0.0009417478636560145,
+      -0.003396305896485999,
+      -0.014146973489637428
+    ],
+    "note": "Positive delta = performance degrades under distribution shift, as expected for any tuned method; large disparities between methods' deltas (not just their absolute levels) are the generalization-relevant signal here."
+  }
+}

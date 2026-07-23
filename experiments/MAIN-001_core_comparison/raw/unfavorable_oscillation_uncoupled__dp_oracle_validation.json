@@ -1,0 +1,7 @@
+{
+  "n_seeds": 60,
+  "n_checks": 480,
+  "max_discrepancy": 4.5075054799781356e-14,
+  "certified_equivalent": true,
+  "conclusion": "Sequential and myopic oracles are provably and numerically identical in the single-agent, uncoupled scope: perturbing any single timestep's action changes total trajectory loss by exactly that timestep's loss delta, with zero compounding effect on any other timestep."
+}

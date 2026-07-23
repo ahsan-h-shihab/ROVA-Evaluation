@@ -1,0 +1,9 @@
+mechanism,regime,delta,ci_low,ci_high,perm_p,flag
+memory,low,-0.58,-0.96,-0.34,0.062,
+memory,high,0.26,0.20,0.32,0.031,
+decay,low,0.12,-0.08,0.35,0.250,
+decay,high,0.25,-0.09,0.43,0.125,not detected
+propagation,low,-0.38,-0.49,-0.29,0.031,
+propagation,high,0.34,0.27,0.39,0.031,
+stability,low,-0.22,-0.45,0.06,0.125,
+stability,high,0.27,0.12,0.37,0.031,

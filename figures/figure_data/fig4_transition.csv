@@ -1,0 +1,16 @@
+environment,c,delta_vs_static,delta_vs_ewma,delta_mean
+Favorable,0.5,0.98,0.78,0.88
+Favorable,1.5,1.00,0.42,0.71
+Favorable,3.5,-0.28,-0.69,-0.485
+Favorable,8.0,-1.00,-1.00,-1.00
+Favorable,20.0,-1.00,-1.00,-1.00
+Collapse,0.5,0.37,0.02,0.195
+Collapse,1.5,0.62,-0.11,0.255
+Collapse,3.5,0.42,-0.47,-0.025
+Collapse,8.0,-1.00,-1.00,-1.00
+Collapse,20.0,-1.00,-1.00,-1.00
+Unfavorable,0.5,-0.05,0.15,0.05
+Unfavorable,1.5,0.98,0.56,0.77
+Unfavorable,3.5,-0.25,-0.68,-0.465
+Unfavorable,8.0,-1.00,-1.00,-1.00
+Unfavorable,20.0,-1.00,-1.00,-1.00

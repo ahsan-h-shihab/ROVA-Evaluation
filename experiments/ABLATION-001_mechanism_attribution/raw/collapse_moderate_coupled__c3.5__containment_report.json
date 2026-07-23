@@ -1,0 +1,21 @@
+{
+  "prop_scale_per_fold": [
+    0.027076484310132983,
+    1.0804414637376962,
+    0.032772709206820204,
+    1.003136226205861,
+    0.3891775510322742
+  ],
+  "stab_scale_per_fold": [
+    0.15467874530781955,
+    0.026957804576305817,
+    0.003124751673745508,
+    0.06454974729197961,
+    0.007854292897139679
+  ],
+  "prop_scale_median": 0.3891775510322742,
+  "stab_scale_median": 0.026957804576305817,
+  "prop_collapsed_to_zero": false,
+  "stab_collapsed_to_zero": false,
+  "note": "If BOTH collapse to ~0 across folds while the full method still weakly dominates baselines, report per DR4: expressiveness/containment effect, not a mechanism -- report margin and compute cost only, do not claim a mechanism."
+}

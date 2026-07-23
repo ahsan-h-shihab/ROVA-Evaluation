@@ -1,0 +1,21 @@
+{
+  "experiment_id": "PILOT-001",
+  "objective": "Evidence-based assessment of whether HPO trials, outer folds, inner folds, seed count, or cost-ratio grid density can be reduced below the frozen full-budget values without changing scientific conclusions.",
+  "base_environment": "favorable_hmm_coupled (from environments.py), SPEED-REDUCED for this pilot only",
+  "speed_reduction_note": "horizon=40, n_agents=3 used instead of the frozen full-scale horizon=250, n_agents=10, PURELY to make the sensitivity comparison tractable within available compute. This substitution is valid for THIS question (convergence/CI-width behavior of the HPO/CV procedure) but NOT a substitute for the full-scale scientific runs themselves. Caveat: reduced scale plausibly has HIGHER per-trial noise (less internal averaging within one trial), making this pilot a conservative (harder) test -- 'keep current value' conclusions are therefore not optimistic.",
+  "cost_ratio_primary": 3.33,
+  "cost_ratio_grid_check": [0.5, 3.33, 5.0],
+  "policy_under_test": "DTCOATunable (dtcoa_tunable.py)",
+  "search_space": "ROVA_SEARCH_SPACE (search_space.py, unmodified)",
+  "runs": {
+    "pilotA": {"role": "reference (frozen full budget)", "K_out": 5, "K_in": 3, "n_trials": 80, "seeds": "range(60)", "cost_ratio": 3.33},
+    "pilotB_trials40": {"role": "sensitivity: half trials", "K_out": 5, "K_in": 3, "n_trials": 40, "seeds": "range(60)", "cost_ratio": 3.33},
+    "pilotC_kin2": {"role": "sensitivity: fewer inner folds", "K_out": 5, "K_in": 2, "n_trials": 80, "seeds": "range(60)", "cost_ratio": 3.33},
+    "pilotD_kout3": {"role": "sensitivity: fewer outer folds", "K_out": 3, "K_in": 3, "n_trials": 80, "seeds": "range(60)", "cost_ratio": 3.33},
+    "pilotE_seeds30": {"role": "sensitivity: fewer seeds", "K_out": 5, "K_in": 3, "n_trials": 80, "seeds": "range(30)", "cost_ratio": 3.33},
+    "pilotG_c0.5": {"role": "cost-ratio grid density check", "K_out": 5, "K_in": 3, "n_trials": 80, "seeds": "range(60)", "cost_ratio": 0.5},
+    "pilotG_c5.0": {"role": "cost-ratio grid density check", "K_out": 5, "K_in": 3, "n_trials": 80, "seeds": "range(60)", "cost_ratio": 5.0}
+  },
+  "code_version_note": "code/ directory in this experiment's parent project archive contains the exact dtcoa_val package used to produce these results.",
+  "seed_generation": "All seeds are the literal integers 0..N-1 passed directly as scenario-instance seeds to nested_cv_hpo; no additional randomness in seed selection itself. Internal RNG streams (candidate sampling, fold shuffling) are derived deterministically inside nested_cv_hpo/kfold_split from seed0=0 (the nested_cv_hpo default), which was not overridden in any pilot run."
+}

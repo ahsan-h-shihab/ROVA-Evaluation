@@ -1,0 +1,30 @@
+{
+  "no_memory": {
+    "cliffs_delta_vs_full": 0.44,
+    "holm_p": 0.1875,
+    "holm_threshold": 0.05,
+    "significant_degradation": false,
+    "note": "DR3: no significant/practically-meaningful degradation detected -> component's contribution not established at this budget"
+  },
+  "no_decay": {
+    "cliffs_delta_vs_full": 0.6,
+    "holm_p": 0.125,
+    "holm_threshold": 0.016666666666666666,
+    "significant_degradation": false,
+    "note": "DR3: no significant/practically-meaningful degradation detected -> component's contribution not established at this budget"
+  },
+  "no_propagation": {
+    "cliffs_delta_vs_full": 0.44,
+    "holm_p": 0.125,
+    "holm_threshold": 0.025,
+    "significant_degradation": false,
+    "note": "DR3: no significant/practically-meaningful degradation detected -> component's contribution not established at this budget"
+  },
+  "no_stability": {
+    "cliffs_delta_vs_full": 0.84,
+    "holm_p": 0.0625,
+    "holm_threshold": 0.0125,
+    "significant_degradation": false,
+    "note": "DR3: no significant/practically-meaningful degradation detected -> component's contribution not established at this budget"
+  }
+}

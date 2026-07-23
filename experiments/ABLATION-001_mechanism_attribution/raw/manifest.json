@@ -1,0 +1,565 @@
+{
+  "consolidated_at": "2026-07-09 21:31:38",
+  "source_shard_files": [
+    "manifest.shard0.json",
+    "manifest.shard1.json",
+    "manifest.shard10.json",
+    "manifest.shard11.json",
+    "manifest.shard12.json",
+    "manifest.shard13.json",
+    "manifest.shard14.json",
+    "manifest.shard2.json",
+    "manifest.shard3.json",
+    "manifest.shard4.json",
+    "manifest.shard5.json",
+    "manifest.shard6.json",
+    "manifest.shard7.json",
+    "manifest.shard8.json",
+    "manifest.shard9.json"
+  ],
+  "note": "Assembled by merging single-writer per-shard manifests (FIX-5). Per-cell checkpoints remain the authoritative source of truth; see rebuild-from-checkpoints in validate_consistency.py.",
+  "completed": {
+    "favorable_hmm_coupled__c0.5__full": {
+      "finished_at": "2026-07-09 19:42:59",
+      "summary": {
+        "mean_test_regret": 0.04101477885200487
+      }
+    },
+    "favorable_hmm_coupled__c0.5__no_memory": {
+      "finished_at": "2026-07-09 20:10:27",
+      "summary": {
+        "mean_test_regret": 0.016228518380209105
+      }
+    },
+    "favorable_hmm_coupled__c0.5__no_decay": {
+      "finished_at": "2026-07-09 20:37:47",
+      "summary": {
+        "mean_test_regret": 0.05434445606815087
+      }
+    },
+    "favorable_hmm_coupled__c0.5__no_propagation": {
+      "finished_at": "2026-07-09 21:04:49",
+      "summary": {
+        "mean_test_regret": 0.03416882803817879
+      }
+    },
+    "favorable_hmm_coupled__c0.5__no_stability": {
+      "finished_at": "2026-07-09 21:31:38",
+      "summary": {
+        "mean_test_regret": 0.03073491036145829
+      }
+    },
+    "favorable_hmm_coupled__c0.5__ablation_report": {
+      "finished_at": "2026-07-09 21:31:38",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c1.5__full": {
+      "finished_at": "2026-07-09 19:42:56",
+      "summary": {
+        "mean_test_regret": 0.08148039533624298
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_memory": {
+      "finished_at": "2026-07-09 20:10:15",
+      "summary": {
+        "mean_test_regret": 0.03092673606851411
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_decay": {
+      "finished_at": "2026-07-09 20:37:45",
+      "summary": {
+        "mean_test_regret": 0.07773587048779709
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_propagation": {
+      "finished_at": "2026-07-09 21:04:42",
+      "summary": {
+        "mean_test_regret": 0.0661946621936232
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_stability": {
+      "finished_at": "2026-07-09 21:31:21",
+      "summary": {
+        "mean_test_regret": 0.08076394756299085
+      }
+    },
+    "favorable_hmm_coupled__c1.5__ablation_report": {
+      "finished_at": "2026-07-09 21:31:21",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c0.5__full": {
+      "finished_at": "2026-07-09 19:29:54",
+      "summary": {
+        "mean_test_regret": 0.015337826356079337
+      }
+    },
+    "collapse_moderate_coupled__c0.5__no_memory": {
+      "finished_at": "2026-07-09 19:44:29",
+      "summary": {
+        "mean_test_regret": 0.010953560946772908
+      }
+    },
+    "collapse_moderate_coupled__c0.5__no_decay": {
+      "finished_at": "2026-07-09 19:58:55",
+      "summary": {
+        "mean_test_regret": 0.023507892438036256
+      }
+    },
+    "collapse_moderate_coupled__c0.5__no_propagation": {
+      "finished_at": "2026-07-09 20:13:34",
+      "summary": {
+        "mean_test_regret": 0.008374292131138127
+      }
+    },
+    "collapse_moderate_coupled__c0.5__no_stability": {
+      "finished_at": "2026-07-09 20:28:04",
+      "summary": {
+        "mean_test_regret": 0.006352890185847946
+      }
+    },
+    "collapse_moderate_coupled__c0.5__ablation_report": {
+      "finished_at": "2026-07-09 20:28:05",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c1.5__full": {
+      "finished_at": "2026-07-09 19:29:49",
+      "summary": {
+        "mean_test_regret": 0.029056790188921645
+      }
+    },
+    "collapse_moderate_coupled__c1.5__no_memory": {
+      "finished_at": "2026-07-09 19:44:24",
+      "summary": {
+        "mean_test_regret": 0.015430714573386689
+      }
+    },
+    "collapse_moderate_coupled__c1.5__no_decay": {
+      "finished_at": "2026-07-09 19:58:55",
+      "summary": {
+        "mean_test_regret": 0.04201907469213214
+      }
+    },
+    "collapse_moderate_coupled__c1.5__no_propagation": {
+      "finished_at": "2026-07-09 20:13:25",
+      "summary": {
+        "mean_test_regret": 0.01756111677540519
+      }
+    },
+    "collapse_moderate_coupled__c1.5__no_stability": {
+      "finished_at": "2026-07-09 20:27:51",
+      "summary": {
+        "mean_test_regret": 0.021648109317603022
+      }
+    },
+    "collapse_moderate_coupled__c1.5__ablation_report": {
+      "finished_at": "2026-07-09 20:27:51",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c3.5__full": {
+      "finished_at": "2026-07-09 19:29:44",
+      "summary": {
+        "mean_test_regret": 0.06134858230828268
+      }
+    },
+    "collapse_moderate_coupled__c3.5__no_memory": {
+      "finished_at": "2026-07-09 19:44:21",
+      "summary": {
+        "mean_test_regret": 0.0531396528234373
+      }
+    },
+    "collapse_moderate_coupled__c3.5__no_decay": {
+      "finished_at": "2026-07-09 19:58:51",
+      "summary": {
+        "mean_test_regret": 0.05880354512265684
+      }
+    },
+    "collapse_moderate_coupled__c3.5__no_propagation": {
+      "finished_at": "2026-07-09 20:13:21",
+      "summary": {
+        "mean_test_regret": 0.07500771754642607
+      }
+    },
+    "collapse_moderate_coupled__c3.5__no_stability": {
+      "finished_at": "2026-07-09 20:27:50",
+      "summary": {
+        "mean_test_regret": 0.062405662811415255
+      }
+    },
+    "collapse_moderate_coupled__c3.5__ablation_report": {
+      "finished_at": "2026-07-09 20:27:50",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c8.0__full": {
+      "finished_at": "2026-07-09 19:29:41",
+      "summary": {
+        "mean_test_regret": 0.022809084251762396
+      }
+    },
+    "collapse_moderate_coupled__c8.0__no_memory": {
+      "finished_at": "2026-07-09 19:44:17",
+      "summary": {
+        "mean_test_regret": 0.04241526081591476
+      }
+    },
+    "collapse_moderate_coupled__c8.0__no_decay": {
+      "finished_at": "2026-07-09 19:58:59",
+      "summary": {
+        "mean_test_regret": 0.0544317264184925
+      }
+    },
+    "collapse_moderate_coupled__c8.0__no_propagation": {
+      "finished_at": "2026-07-09 20:13:47",
+      "summary": {
+        "mean_test_regret": 0.0656554544059216
+      }
+    },
+    "collapse_moderate_coupled__c8.0__no_stability": {
+      "finished_at": "2026-07-09 20:28:25",
+      "summary": {
+        "mean_test_regret": 0.06101707893227727
+      }
+    },
+    "collapse_moderate_coupled__c8.0__ablation_report": {
+      "finished_at": "2026-07-09 20:28:25",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c20.0__full": {
+      "finished_at": "2026-07-09 19:29:34",
+      "summary": {
+        "mean_test_regret": 0.009910029542562112
+      }
+    },
+    "collapse_moderate_coupled__c20.0__no_memory": {
+      "finished_at": "2026-07-09 19:44:06",
+      "summary": {
+        "mean_test_regret": 0.07577632395103566
+      }
+    },
+    "collapse_moderate_coupled__c20.0__no_decay": {
+      "finished_at": "2026-07-09 19:58:32",
+      "summary": {
+        "mean_test_regret": 0.11602418063486072
+      }
+    },
+    "collapse_moderate_coupled__c20.0__no_propagation": {
+      "finished_at": "2026-07-09 20:13:03",
+      "summary": {
+        "mean_test_regret": 0.1517958111899786
+      }
+    },
+    "collapse_moderate_coupled__c20.0__no_stability": {
+      "finished_at": "2026-07-09 20:27:26",
+      "summary": {
+        "mean_test_regret": 0.15719304651792956
+      }
+    },
+    "collapse_moderate_coupled__c20.0__ablation_report": {
+      "finished_at": "2026-07-09 20:27:26",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c3.5__full": {
+      "finished_at": "2026-07-09 19:42:57",
+      "summary": {
+        "mean_test_regret": 0.07565973493432426
+      }
+    },
+    "favorable_hmm_coupled__c3.5__no_memory": {
+      "finished_at": "2026-07-09 20:10:28",
+      "summary": {
+        "mean_test_regret": 0.051439824457494544
+      }
+    },
+    "favorable_hmm_coupled__c3.5__no_decay": {
+      "finished_at": "2026-07-09 20:37:45",
+      "summary": {
+        "mean_test_regret": 0.06840863133494994
+      }
+    },
+    "favorable_hmm_coupled__c3.5__no_propagation": {
+      "finished_at": "2026-07-09 21:04:50",
+      "summary": {
+        "mean_test_regret": 0.0828503395388398
+      }
+    },
+    "favorable_hmm_coupled__c8.0__full": {
+      "finished_at": "2026-07-09 19:43:02",
+      "summary": {
+        "mean_test_regret": 0.02042790385196098
+      }
+    },
+    "favorable_hmm_coupled__c8.0__no_memory": {
+      "finished_at": "2026-07-09 20:10:36",
+      "summary": {
+        "mean_test_regret": 0.0320403714802502
+      }
+    },
+    "favorable_hmm_coupled__c8.0__no_decay": {
+      "finished_at": "2026-07-09 20:37:57",
+      "summary": {
+        "mean_test_regret": 0.03291251514201249
+      }
+    },
+    "favorable_hmm_coupled__c8.0__no_propagation": {
+      "finished_at": "2026-07-09 21:04:49",
+      "summary": {
+        "mean_test_regret": 0.048875594812836515
+      }
+    },
+    "favorable_hmm_coupled__c8.0__no_stability": {
+      "finished_at": "2026-07-09 21:31:37",
+      "summary": {
+        "mean_test_regret": 0.05237306116947854
+      }
+    },
+    "favorable_hmm_coupled__c8.0__ablation_report": {
+      "finished_at": "2026-07-09 21:31:37",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c20.0__full": {
+      "finished_at": "2026-07-09 19:43:08",
+      "summary": {
+        "mean_test_regret": 0.003567084666281809
+      }
+    },
+    "favorable_hmm_coupled__c20.0__no_memory": {
+      "finished_at": "2026-07-09 20:10:34",
+      "summary": {
+        "mean_test_regret": 0.05975670492685701
+      }
+    },
+    "favorable_hmm_coupled__c20.0__no_decay": {
+      "finished_at": "2026-07-09 20:37:58",
+      "summary": {
+        "mean_test_regret": 0.06819621048074523
+      }
+    },
+    "favorable_hmm_coupled__c20.0__no_propagation": {
+      "finished_at": "2026-07-09 21:04:54",
+      "summary": {
+        "mean_test_regret": 0.08782593155397897
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__full": {
+      "finished_at": "2026-07-09 19:18:20",
+      "summary": {
+        "mean_test_regret": 0.011891645729779573
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__no_memory": {
+      "finished_at": "2026-07-09 19:22:03",
+      "summary": {
+        "mean_test_regret": 0.005410869153552394
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__no_decay": {
+      "finished_at": "2026-07-09 19:25:46",
+      "summary": {
+        "mean_test_regret": 0.018515554562887428
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__no_propagation": {
+      "finished_at": "2026-07-09 19:29:31",
+      "summary": {
+        "mean_test_regret": 0.0017399962812546647
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__no_stability": {
+      "finished_at": "2026-07-09 19:33:08",
+      "summary": {
+        "mean_test_regret": 0.0032569009431727912
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__ablation_report": {
+      "finished_at": "2026-07-09 19:33:08",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": true,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__full": {
+      "finished_at": "2026-07-09 19:18:19",
+      "summary": {
+        "mean_test_regret": 0.0935766114099452
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__no_memory": {
+      "finished_at": "2026-07-09 19:21:58",
+      "summary": {
+        "mean_test_regret": 0.034572957239996725
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__no_decay": {
+      "finished_at": "2026-07-09 19:25:39",
+      "summary": {
+        "mean_test_regret": 0.08465543695234554
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__no_propagation": {
+      "finished_at": "2026-07-09 19:29:19",
+      "summary": {
+        "mean_test_regret": 0.0843531579818956
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__no_stability": {
+      "finished_at": "2026-07-09 19:32:58",
+      "summary": {
+        "mean_test_regret": 0.10514904417695199
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__ablation_report": {
+      "finished_at": "2026-07-09 19:32:59",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__full": {
+      "finished_at": "2026-07-09 19:18:21",
+      "summary": {
+        "mean_test_regret": 0.04536924964990243
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__no_memory": {
+      "finished_at": "2026-07-09 19:21:58",
+      "summary": {
+        "mean_test_regret": 0.041235574354303105
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__no_decay": {
+      "finished_at": "2026-07-09 19:25:37",
+      "summary": {
+        "mean_test_regret": 0.05671581130491049
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__no_propagation": {
+      "finished_at": "2026-07-09 19:29:15",
+      "summary": {
+        "mean_test_regret": 0.06705921979983279
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__no_stability": {
+      "finished_at": "2026-07-09 19:32:54",
+      "summary": {
+        "mean_test_regret": 0.05528344666762618
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__ablation_report": {
+      "finished_at": "2026-07-09 19:32:54",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__full": {
+      "finished_at": "2026-07-09 19:18:22",
+      "summary": {
+        "mean_test_regret": 0.016820028817999506
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__no_memory": {
+      "finished_at": "2026-07-09 19:22:02",
+      "summary": {
+        "mean_test_regret": 0.026584284874626003
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__no_decay": {
+      "finished_at": "2026-07-09 19:25:45",
+      "summary": {
+        "mean_test_regret": 0.011636525165516273
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__no_propagation": {
+      "finished_at": "2026-07-09 19:29:24",
+      "summary": {
+        "mean_test_regret": 0.027514702140992126
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__no_stability": {
+      "finished_at": "2026-07-09 19:33:01",
+      "summary": {
+        "mean_test_regret": 0.020834325226573122
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__ablation_report": {
+      "finished_at": "2026-07-09 19:33:01",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__full": {
+      "finished_at": "2026-07-09 19:18:18",
+      "summary": {
+        "mean_test_regret": 0.007196988637546545
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__no_memory": {
+      "finished_at": "2026-07-09 19:22:00",
+      "summary": {
+        "mean_test_regret": 0.03657332045498528
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__no_decay": {
+      "finished_at": "2026-07-09 19:25:42",
+      "summary": {
+        "mean_test_regret": 0.004049573835935126
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__no_propagation": {
+      "finished_at": "2026-07-09 19:29:23",
+      "summary": {
+        "mean_test_regret": 0.04533266668041344
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__no_stability": {
+      "finished_at": "2026-07-09 19:33:03",
+      "summary": {
+        "mean_test_regret": 0.04080547277306031
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__ablation_report": {
+      "finished_at": "2026-07-09 19:33:03",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    }
+  }
+}

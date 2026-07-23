@@ -1,0 +1,416 @@
+{
+  "completed": {
+    "favorable_hmm_coupled__c0.5__static": {
+      "summary": {
+        "mean_test_regret": 0.009662872997036696
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c0.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.020644275538807152
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c0.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.03931267573621593
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c0.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "favorable_hmm_coupled__c1.5__static": {
+      "summary": {
+        "mean_test_regret": 0.02875030721751573
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c1.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.06318351865564022
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c1.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.08037828526169731
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c1.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "favorable_hmm_coupled__c3.5__static": {
+      "summary": {
+        "mean_test_regret": 0.09424905070368682
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c3.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.1525400385837532
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c3.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.07397111411717147
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c3.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "favorable_hmm_coupled__c8.0__static": {
+      "summary": {
+        "mean_test_regret": 0.38407303914400537
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c8.0__ewma": {
+      "summary": {
+        "mean_test_regret": 0.44228499842555724
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c8.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.020303159374696872
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c8.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "favorable_hmm_coupled__c20.0__static": {
+      "summary": {
+        "mean_test_regret": 1.280674800649311
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c20.0__ewma": {
+      "summary": {
+        "mean_test_regret": 1.2728475595144007
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c20.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.0046942949113440244
+      },
+      "source": "checkpoint"
+    },
+    "favorable_hmm_coupled__c20.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__static": {
+      "summary": {
+        "mean_test_regret": 0.0037726734095950626
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.0016665443150613863
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.011586259067755747
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c0.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": true,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__static": {
+      "summary": {
+        "mean_test_regret": 0.03113315634788172
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.07170526580169007
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.0932688528699591
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c1.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__static": {
+      "summary": {
+        "mean_test_regret": 0.10568697517678331
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.16892512171375412
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.08052890662758486
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c3.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": true
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__static": {
+      "summary": {
+        "mean_test_regret": 0.3949240547457288
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__ewma": {
+      "summary": {
+        "mean_test_regret": 0.4409674693777884
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.011320536985667106
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c8.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__static": {
+      "summary": {
+        "mean_test_regret": 1.2708592124981253
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__ewma": {
+      "summary": {
+        "mean_test_regret": 1.061019806888083
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.005634549012365817
+      },
+      "source": "checkpoint"
+    },
+    "unfavorable_oscillation_uncoupled__c20.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "collapse_moderate_coupled__c0.5__static": {
+      "summary": {
+        "mean_test_regret": 0.008665637387633617
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c0.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.01424544242076744
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c0.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.015761814862558517
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c0.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "collapse_moderate_coupled__c1.5__static": {
+      "summary": {
+        "mean_test_regret": 0.012750727026102786
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c1.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.04248452985919099
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c1.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.030981217794250625
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c1.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "collapse_moderate_coupled__c3.5__static": {
+      "summary": {
+        "mean_test_regret": 0.04785956295452687
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c3.5__ewma": {
+      "summary": {
+        "mean_test_regret": 0.09261119368691303
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c3.5__rova": {
+      "summary": {
+        "mean_test_regret": 0.06245370074871716
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c3.5__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "collapse_moderate_coupled__c8.0__static": {
+      "summary": {
+        "mean_test_regret": 0.25806944894843686
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c8.0__ewma": {
+      "summary": {
+        "mean_test_regret": 0.3425532326960622
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c8.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.029815839549035085
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c8.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "collapse_moderate_coupled__c20.0__static": {
+      "summary": {
+        "mean_test_regret": 0.9312446032529349
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c20.0__ewma": {
+      "summary": {
+        "mean_test_regret": 1.1906973110921217
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c20.0__rova": {
+      "summary": {
+        "mean_test_regret": 0.011299857831126699
+      },
+      "source": "checkpoint"
+    },
+    "collapse_moderate_coupled__c20.0__containment": {
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      },
+      "source": "containment_report"
+    },
+    "unfavorable_oscillation_uncoupled__dp_oracle_validation": {
+      "summary": {
+        "certified_equivalent": true
+      },
+      "source": "dp_oracle_validation"
+    },
+    "shift__rova__favorable_hmm_coupled_to_unfavorable_oscillation_uncoupled": {
+      "finished_at": "2026-07-08 18:28:37",
+      "summary": {
+        "mean_regret_delta_under_shift": -0.008230367661547512,
+        "max_regret_delta_under_shift": 0.0009417478636560145,
+        "per_fold_deltas": [
+          -0.018879853571990624,
+          -0.005670453213279525,
+          0.0009417478636560145,
+          -0.003396305896485999,
+          -0.014146973489637428
+        ],
+        "note": "Positive delta = performance degrades under distribution shift, as expected for any tuned method; large disparities between methods' deltas (not just their absolute levels) are the generalization-relevant signal here."
+      }
+    },
+    "shift__ewma__favorable_hmm_coupled_to_unfavorable_oscillation_uncoupled": {
+      "finished_at": "2026-07-08 18:28:39",
+      "summary": {
+        "mean_regret_delta_under_shift": 0.026318934324410247,
+        "max_regret_delta_under_shift": 0.07118354669911828,
+        "per_fold_deltas": [
+          0.008049178207490501,
+          0.07118354669911828,
+          -0.02353604926194869,
+          0.0475229334274169,
+          0.028375062549974267
+        ],
+        "note": "Positive delta = performance degrades under distribution shift, as expected for any tuned method; large disparities between methods' deltas (not just their absolute levels) are the generalization-relevant signal here."
+      }
+    }
+  },
+  "note": "Reconstructed from authoritative per-unit artifacts after a 15-shard lost-update race on the live manifest.json; see manifest.live_raced.json for the raw raced file."
+}

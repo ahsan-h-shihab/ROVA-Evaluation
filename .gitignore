@@ -1,0 +1,14 @@
+# Python bytecode caches
+__pycache__/
+*.py[cod]
+
+# Local assistant/session configuration (never publish)
+.claude/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Note: reproduce/out_*.json and reproduce/_*.log are COMMITTED archived
+# expected outputs, not ignored; re-running reproduce.sh overwrites them
+# in place by design.

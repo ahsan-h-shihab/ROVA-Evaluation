@@ -1,0 +1,44 @@
+{
+  "shard": 1,
+  "started_at": "2026-07-09 19:14:38",
+  "completed": {
+    "favorable_hmm_coupled__c1.5__full": {
+      "finished_at": "2026-07-09 19:42:56",
+      "summary": {
+        "mean_test_regret": 0.08148039533624298
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_memory": {
+      "finished_at": "2026-07-09 20:10:15",
+      "summary": {
+        "mean_test_regret": 0.03092673606851411
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_decay": {
+      "finished_at": "2026-07-09 20:37:45",
+      "summary": {
+        "mean_test_regret": 0.07773587048779709
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_propagation": {
+      "finished_at": "2026-07-09 21:04:42",
+      "summary": {
+        "mean_test_regret": 0.0661946621936232
+      }
+    },
+    "favorable_hmm_coupled__c1.5__no_stability": {
+      "finished_at": "2026-07-09 21:31:21",
+      "summary": {
+        "mean_test_regret": 0.08076394756299085
+      }
+    },
+    "favorable_hmm_coupled__c1.5__ablation_report": {
+      "finished_at": "2026-07-09 21:31:21",
+      "summary": {
+        "attributed_components": [],
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    }
+  }
+}

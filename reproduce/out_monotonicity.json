@@ -1,0 +1,185 @@
+{
+  "implementations": {
+    "frozen_DTCOA": {
+      "A1_propagation_release": {
+        "n_violations": 1,
+        "n_oversight_removed": 0,
+        "recon_mismatch": 0,
+        "events": [
+          {
+            "agent": 0,
+            "timestep": 3,
+            "trust_before": 0.6737200000000001,
+            "trust_after": 0.6696040000000001,
+            "authorization_before": 2,
+            "authorization_after": 3,
+            "evidence": 0.6600000000000001,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": false
+          }
+        ]
+      },
+      "A2_oversight_removal": {
+        "n_violations": 2,
+        "n_oversight_removed": 2,
+        "recon_mismatch": 0,
+        "events": [
+          {
+            "agent": 0,
+            "timestep": 7,
+            "trust_before": 0.38800046200000005,
+            "trust_after": 0.37960032340000005,
+            "authorization_before": 0,
+            "authorization_after": 1,
+            "evidence": 0.36,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": true
+          },
+          {
+            "agent": 0,
+            "timestep": 11,
+            "trust_before": 0.3667229109262,
+            "trust_after": 0.36470603764834,
+            "authorization_before": 0,
+            "authorization_after": 1,
+            "evidence": 0.36,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": true
+          }
+        ]
+      },
+      "A3_stability_release": {
+        "n_violations": 1,
+        "n_oversight_removed": 0,
+        "recon_mismatch": 0,
+        "events": [
+          {
+            "agent": 0,
+            "timestep": 6,
+            "trust_before": 0.513507493,
+            "trust_after": 0.4671552451,
+            "authorization_before": 1,
+            "authorization_after": 2,
+            "evidence": 0.359,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 0.0,
+            "stability_penalty_before": 1.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": false
+          }
+        ]
+      }
+    },
+    "tuned_class_DTCOATunable": {
+      "A1_propagation_release": {
+        "n_violations": 1,
+        "n_oversight_removed": 0,
+        "recon_mismatch": 0,
+        "events": [
+          {
+            "agent": 0,
+            "timestep": 3,
+            "trust_before": 0.6737200000000001,
+            "trust_after": 0.6696040000000001,
+            "authorization_before": 2,
+            "authorization_after": 3,
+            "evidence": 0.6600000000000001,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": false
+          }
+        ]
+      },
+      "A2_oversight_removal": {
+        "n_violations": 2,
+        "n_oversight_removed": 2,
+        "recon_mismatch": 0,
+        "events": [
+          {
+            "agent": 0,
+            "timestep": 7,
+            "trust_before": 0.38800046200000005,
+            "trust_after": 0.37960032340000005,
+            "authorization_before": 0,
+            "authorization_after": 1,
+            "evidence": 0.36,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": true
+          },
+          {
+            "agent": 0,
+            "timestep": 11,
+            "trust_before": 0.3667229109262,
+            "trust_after": 0.36470603764834,
+            "authorization_before": 0,
+            "authorization_after": 1,
+            "evidence": 0.36,
+            "propagation_penalty": 0.0,
+            "stability_penalty": 0.0,
+            "propagation_penalty_before": 1.0,
+            "stability_penalty_before": 0.0,
+            "context_risk": 0.2,
+            "esc_flag": false,
+            "oversight_removed": true
+          }
+        ]
+      },
+      "A3_stability_release": {
+        "n_violations": 0,
+        "n_oversight_removed": 0,
+        "recon_mismatch": 0,
+        "events": []
+      }
+    }
+  },
+  "narrow_property": {
+    "violations": 0,
+    "holds": true
+  },
+  "boundedness_contraction": {
+    "trust_min": 0.06483056208083869,
+    "trust_max": 0.7865313310892423,
+    "auth_min": 0,
+    "auth_max": 3,
+    "bounded": true,
+    "contraction_worst_ratio": 0.7000000000031099,
+    "contraction_bound": 0.7
+  },
+  "A3_regenerated_sequence": [
+    0.593,
+    0.818,
+    0.45,
+    0.334,
+    0.563,
+    0.429,
+    0.359,
+    0.677
+  ],
+  "recon_mismatch_total": 0
+}

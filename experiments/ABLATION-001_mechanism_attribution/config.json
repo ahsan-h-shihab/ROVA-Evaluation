@@ -1,0 +1,130 @@
+{
+  "experiment": "ABLATION-001_mechanism_attribution",
+  "purpose": "Mechanism attribution (DR3) for ROVA: which components (memory, decay, propagation, stability) are load-bearing, and whether the contributing set differs by cost-ratio regime. Follows the frozen MAIN-001 core comparison.",
+  "manifest_reference": "ROVA_CCE_ABLATION001 handoff (design guidance); repository is authoritative",
+  "runbook_reference": "launch-readiness report v2 (in-session)",
+  "date_executed": "2026-07-09",
+  "date_archived": "2026-07-10",
+  "status": "complete",
+
+  "git_commit": "4533c61aa2e252698fd0c31d5bc1f9b9d04c18f0",
+  "git_commit_expected": "4533c61aa2e252698fd0c31d5bc1f9b9d04c18f0",
+  "git_commit_match": true,
+  "git_branch": "ablation-001",
+  "git_tag": "ablation-001-frozen",
+  "git_anchor": "branched from tag main-001-frozen (7f624ca), MAIN-001 frozen anchor",
+
+  "environment_file": "raw/environment.txt",
+  "seed_verification": {
+    "file": "raw/seeds_verified.json",
+    "result": "PASSED",
+    "detail": "60 unique seeds, exactly 0..59, matching the frozen MAIN-001 protocol"
+  },
+  "environment_capture": {
+    "python": "3.13.14",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "os": "Linux-6.17.0-40-generic-x86_64-with-glibc2.42"
+  },
+
+  "budget": {
+    "name": "full",
+    "K_out": 5,
+    "K_in": 3,
+    "n_trials": 80,
+    "n_seeds": 60,
+    "cfg_overrides": {},
+    "note": "identical to MAIN-001 frozen budget"
+  },
+  "cost_ratio_grid": [0.5, 1.5, 3.5, 8.0, 20.0],
+  "environments": [
+    "favorable_hmm_coupled",
+    "unfavorable_oscillation_uncoupled",
+    "collapse_moderate_coupled"
+  ],
+  "branches_per_cell": ["full", "no_memory", "no_decay", "no_propagation", "no_stability"],
+  "design": "one-at-a-time re-tuned ablations; each branch independently re-tuned at the frozen HPO budget. e_min kept tunable in no_memory/no_decay (FIX-1).",
+
+  "execution_host": {
+    "board": "MSI MS-7E51",
+    "cpu": "AMD Ryzen 9 9950X (16 physical / 32 logical)",
+    "ram": "59 GiB total",
+    "gpu_used": false
+  },
+  "launch_config": {
+    "launcher": "systemd-run --user (one transient service per shard, isolated cgroup)",
+    "num_shards": 15,
+    "shard_assignment": "cell_index % 15 (one cell per shard)",
+    "blas_thread_env": {"OMP_NUM_THREADS": 1, "MKL_NUM_THREADS": 1, "OPENBLAS_NUM_THREADS": 1, "NUMEXPR_NUM_THREADS": 1},
+    "interpreter": "/home/halyk-rtx5090/miniconda3/envs/rova/bin/python3",
+    "working_directory": "code/",
+    "out_dir": "abl001_out",
+    "wall_clock": "~2h13m (19:18:18 -> 21:31:47, 2026-07-09), 15-way",
+    "oversubscription": "none (15 single-threaded shards on 16 physical cores)"
+  },
+
+  "completion_criteria": {
+    "required_manifest_entries": 90,
+    "required_entries_present": 90,
+    "branch_hpo_units": 75,
+    "ablation_reports": 15,
+    "containment_reports": 15,
+    "checkpoints_all_5_folds": true,
+    "folds_total_validated": 375,
+    "nonfinite_values": 0,
+    "fail_count": 0,
+    "structural_audit": "PASS (0 problems)"
+  },
+
+  "validation": {
+    "distributional_consistency_validator": {
+      "gate": "hard",
+      "result": "PASS",
+      "cells_pass": "15/15",
+      "compares": "ablation-full per-fold regrets vs archived MAIN-001 ROVA (read-only)",
+      "criterion": "t-based CI overlap of mean per-fold regret (primary) OR relative-difference guard; distributional within Monte-Carlo noise, not bit-identity",
+      "report": "analysis/consistency_report.json"
+    },
+    "dr3_recompute_vs_driver_mismatches": 0
+  },
+
+  "dr3_method": {
+    "primary_effect": "Cliff's delta of ablation-vs-full nested-CV test regrets, per cell (scale-free)",
+    "inference_unit": "cell (n<=6/regime), environment as clustering level",
+    "stage2_primary": "Option B: sign test + Wilcoxon signed-rank on cell-level deltas + env-cluster bootstrap CI",
+    "stage2_sensitivity": "Option C: exact within-cell sign-flip permutation",
+    "regime_boundary": {"low_max": 1.5, "high_min": 8.0, "transition": 3.5, "source": "MAIN-001 frozen verdict table (documented constant, not a runtime read of MAIN-001)"},
+    "multiplicity": "uncorrected + Holm(FWER) + BH(FDR); effect sizes primary",
+    "wording_policy": "non-flagged components reported 'not detected at this budget', never 'inert'",
+    "outputs": "analysis/dr3_descriptive/ (per-cell, descriptive), analysis/dr3_regime/ (authoritative regime inference)"
+  },
+
+  "deviations": [
+    {
+      "id": "journald-user-unit-records-rotated",
+      "severity": "bookkeeping (no data impact)",
+      "description": "systemd-run --user --collect removed each shard unit on exit and the --user journal's per-unit lifecycle records had rotated by audit time, so per-unit exit codes were not retrievable.",
+      "resolution": "Completion and success established from the authoritative artifacts (75/75 checkpoints at 5 finite folds, 15/15 shard manifests with 6 entries each, 90/90 union) plus confirmation of NO reboot during the run window and ZERO ablation-related errors in the journal. This is stronger than an exit code."
+    },
+    {
+      "id": "in-run-auto-manifest-partial",
+      "severity": "none (superseded)",
+      "description": "raw/manifest.json is the driver's in-run shard-0 auto-consolidation and may be partial (shard 0 = favorable c0.5 finished near the end).",
+      "resolution": "Authoritative post-run consolidation is analysis/consolidated_manifest.json (90/90); raw/manifest.json preserved as-produced for provenance."
+    },
+    {
+      "id": "consolidation-to-derived-location",
+      "severity": "none (immutability choice)",
+      "description": "Post-run consolidation and all derived analyses were written to a NEW location (abl001_analysis, archived here as analysis/) rather than into the raw output dir, to keep every raw artifact byte-immutable.",
+      "resolution": "Raw digest verified identical before and after the entire post-processing pipeline."
+    }
+  ],
+
+  "reproducibility": {
+    "verified": true,
+    "raw_immutable_digest_pre_post_pipeline": "identical",
+    "analysis_regenerable_from_raw": true,
+    "regeneration": "see reproduce.sh; derived analysis recomputes from raw/ using the committed modules at git 4533c61 (validate_consistency, dr3_attribution, dr3_regime_inference)",
+    "determinism": "nested_cv_hpo is deterministic given (seed0=0, run tag); same-tag reruns reproduce checkpoints bit-for-bit (verified pre-launch)"
+  }
+}

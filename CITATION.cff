@@ -1,0 +1,59 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software or the evaluation artifacts, please cite both the
+  software (this repository) and the paper (preferred-citation).
+type: software
+title: "ROVA-Evaluation: circularity-controlled evaluation artifacts for runtime governance of agentic AI"
+authors:
+  - family-names: Shihab
+    given-names: Ahsan Habib
+    orcid: "https://orcid.org/0009-0008-1157-6335"
+    affiliation: "Al-Farabi Kazakh National University"
+  - family-names: Mansurova
+    given-names: Madina
+    orcid: "https://orcid.org/0000-0002-9680-2758"
+    affiliation: "Al-Farabi Kazakh National University"
+  - family-names: Kozierkiewicz
+    given-names: Adrianna
+    orcid: "https://orcid.org/0000-0001-8445-3979"
+    affiliation: "Wroclaw University of Science and Technology"
+  - family-names: Mussa
+    given-names: Aman
+    orcid: "https://orcid.org/0009-0001-9972-7677"
+    affiliation: "Al-Farabi Kazakh National University"
+  - family-names: Sarsembayeva
+    given-names: Talshyn
+    orcid: "https://orcid.org/0000-0001-7668-2640"
+    affiliation: "Al-Farabi Kazakh National University"
+repository-code: "https://github.com/ahsan-h-shihab/ROVA-Evaluation"
+license: MIT
+version: 1.0.0
+date-released: "2026-07-23"
+keywords:
+  - agentic AI
+  - runtime governance
+  - evaluation methodology
+  - construct validity
+  - reproducibility
+preferred-citation:
+  type: article
+  title: "The Verdict Is in the Protocol: A Circularity-Controlled, Cost-Ratio-Resolved Evaluation of Runtime Governance for Agentic AI"
+  journal: "IEEE Access"
+  year: 2026
+  notes: "Under review. Citation fields (volume, pages, DOI) will be updated upon publication."
+  authors:
+    - family-names: Shihab
+      given-names: Ahsan Habib
+      orcid: "https://orcid.org/0009-0008-1157-6335"
+    - family-names: Mansurova
+      given-names: Madina
+      orcid: "https://orcid.org/0000-0002-9680-2758"
+    - family-names: Kozierkiewicz
+      given-names: Adrianna
+      orcid: "https://orcid.org/0000-0001-8445-3979"
+    - family-names: Mussa
+      given-names: Aman
+      orcid: "https://orcid.org/0009-0001-9972-7677"
+    - family-names: Sarsembayeva
+      given-names: Talshyn
+      orcid: "https://orcid.org/0000-0001-7668-2640"

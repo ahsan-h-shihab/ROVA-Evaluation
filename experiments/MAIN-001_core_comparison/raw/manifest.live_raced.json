@@ -1,0 +1,30 @@
+{
+  "completed": {
+    "favorable_hmm_coupled__c20.0__static": {
+      "finished_at": "2026-07-08 17:33:47",
+      "summary": {
+        "mean_test_regret": 1.280674800649311
+      }
+    },
+    "favorable_hmm_coupled__c20.0__ewma": {
+      "finished_at": "2026-07-08 17:53:52",
+      "summary": {
+        "mean_test_regret": 1.2728475595144007
+      }
+    },
+    "favorable_hmm_coupled__c20.0__rova": {
+      "finished_at": "2026-07-08 18:21:10",
+      "summary": {
+        "mean_test_regret": 0.0046942949113440244
+      }
+    },
+    "favorable_hmm_coupled__c20.0__containment": {
+      "finished_at": "2026-07-08 18:21:10",
+      "summary": {
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    }
+  },
+  "started_at": "2026-07-08 17:13:26"
+}

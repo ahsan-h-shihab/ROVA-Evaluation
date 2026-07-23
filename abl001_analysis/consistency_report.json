@@ -1,0 +1,445 @@
+{
+  "all_pass": true,
+  "n_cells_checked": 15,
+  "n_cells_expected": 15,
+  "rel_tol": 0.15,
+  "main_raw": "/home/halyk-rtx5090/Projects/ROVA_CCE/rova_project/experiments/MAIN-001_core_comparison/raw/hpo_checkpoints",
+  "problems": [],
+  "cells": {
+    "favorable_hmm_coupled__c0.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.04101477885200487,
+      "mean_main_rova": 0.03931267573621593,
+      "ci_ablation_full": [
+        0.028588742375347392,
+        0.05344081532866235
+      ],
+      "ci_main_rova": [
+        0.026672023278105264,
+        0.05195332819432659
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.043296547078349075,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "favorable_hmm_coupled__c1.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.08148039533624298,
+      "mean_main_rova": 0.08037828526169731,
+      "ci_ablation_full": [
+        0.05822826601550457,
+        0.10473252465698138
+      ],
+      "ci_main_rova": [
+        0.05873960660081029,
+        0.10201696392258433
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.013711540013044463,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "favorable_hmm_coupled__c3.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.07565973493432426,
+      "mean_main_rova": 0.07397111411717146,
+      "ci_ablation_full": [
+        0.06335216857161152,
+        0.087967301297037
+      ],
+      "ci_main_rova": [
+        0.060672992143394194,
+        0.08726923609094872
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.022828111179696475,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "favorable_hmm_coupled__c8.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.020427903851960978,
+      "mean_main_rova": 0.02030315937469687,
+      "ci_ablation_full": [
+        0.014449154511121646,
+        0.026406653192800313
+      ],
+      "ci_main_rova": [
+        0.01732080155158011,
+        0.023285517197813625
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.006144091910127766,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "favorable_hmm_coupled__c20.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.003567084666281809,
+      "mean_main_rova": 0.0046942949113440244,
+      "ci_ablation_full": [
+        0.0025410504259928144,
+        0.004593118906570804
+      ],
+      "ci_main_rova": [
+        0.003268651543206821,
+        0.006119938279481228
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.24012344054870716,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "unfavorable_oscillation_uncoupled__c0.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.011891645729779575,
+      "mean_main_rova": 0.011586259067755747,
+      "ci_ablation_full": [
+        -0.01769853850251802,
+        0.04148182996207717
+      ],
+      "ci_main_rova": [
+        -0.016400041406633755,
+        0.03957255954214525
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.02635765869189915,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "unfavorable_oscillation_uncoupled__c1.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.09357661140994519,
+      "mean_main_rova": 0.0932688528699591,
+      "ci_ablation_full": [
+        0.07254926509787057,
+        0.11460395772201981
+      ],
+      "ci_main_rova": [
+        0.07492467310407232,
+        0.11161303263584589
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.0032996925609794277,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "unfavorable_oscillation_uncoupled__c3.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.04536924964990243,
+      "mean_main_rova": 0.08052890662758486,
+      "ci_ablation_full": [
+        0.035372690207649216,
+        0.055365809092155646
+      ],
+      "ci_main_rova": [
+        0.04965368780868084,
+        0.11140412544648887
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.4366091438479636,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "unfavorable_oscillation_uncoupled__c8.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.016820028817999506,
+      "mean_main_rova": 0.011320536985667106,
+      "ci_ablation_full": [
+        0.008547851912512845,
+        0.025092205723486166
+      ],
+      "ci_main_rova": [
+        -0.0019943128814237723,
+        0.024635386852757984
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.48579778850555305,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "unfavorable_oscillation_uncoupled__c20.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.007196988637546545,
+      "mean_main_rova": 0.005634549012365817,
+      "ci_ablation_full": [
+        0.0031570221558186286,
+        0.011236955119274462
+      ],
+      "ci_main_rova": [
+        0.0019764049445547636,
+        0.00929269308017687
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.27729630565848884,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "collapse_moderate_coupled__c0.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.015337826356079337,
+      "mean_main_rova": 0.015761814862558517,
+      "ci_ablation_full": [
+        0.003802228522226522,
+        0.026873424189932153
+      ],
+      "ci_main_rova": [
+        0.003747897653280945,
+        0.02777573207183609
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.026899726343464773,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "collapse_moderate_coupled__c1.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.029056790188921645,
+      "mean_main_rova": 0.030981217794250625,
+      "ci_ablation_full": [
+        0.010717317437281063,
+        0.04739626294056223
+      ],
+      "ci_main_rova": [
+        0.013486163367191543,
+        0.04847627222130971
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.06211594450900212,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "collapse_moderate_coupled__c3.5": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.06134858230828268,
+      "mean_main_rova": 0.062453700748717166,
+      "ci_ablation_full": [
+        0.04809359643809891,
+        0.07460356817846646
+      ],
+      "ci_main_rova": [
+        0.04990349240594563,
+        0.0750039090914887
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.01769500329341464,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "collapse_moderate_coupled__c8.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.022809084251762392,
+      "mean_main_rova": 0.029815839549035085,
+      "ci_ablation_full": [
+        0.019435829547729426,
+        0.02618233895579536
+      ],
+      "ci_main_rova": [
+        0.021866825306834183,
+        0.03776485379123599
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.23500110690324158,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    },
+    "collapse_moderate_coupled__c20.0": {
+      "n_folds_ablation": 5,
+      "n_folds_main": 5,
+      "mean_ablation_full": 0.009910029542562112,
+      "mean_main_rova": 0.0112998578311267,
+      "ci_ablation_full": [
+        0.004629642965576264,
+        0.01519041611954796
+      ],
+      "ci_main_rova": [
+        0.0065910431448280475,
+        0.016008672517425354
+      ],
+      "ci_overlap": true,
+      "relative_difference": 0.12299520129679449,
+      "rel_tol": 0.15,
+      "pass": true,
+      "ablation_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "main_budget": {
+        "K_out": 5,
+        "K_in": 3,
+        "n_trials": 80
+      },
+      "budget_match": true
+    }
+  }
+}

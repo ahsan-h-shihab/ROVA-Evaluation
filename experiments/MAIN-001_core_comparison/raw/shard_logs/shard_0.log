@@ -1,0 +1,9 @@
+[shard 0/15] assigned 1 of 15 work units
+[run]  favorable_hmm_coupled__c0.5__static
+[run]  favorable_hmm_coupled__c0.5__ewma
+[run]  favorable_hmm_coupled__c0.5__rova
+[shard 0/15] assigned units complete.
+[run]  unfavorable_oscillation_uncoupled__dp_oracle_validation
+[wait] shift__rova__favorable_hmm_coupled_to_unfavorable_oscillation_uncoupled: prerequisite 'favorable_hmm_coupled__c3.5__rova' not yet completed by its shard.
+[wait] shift__ewma__favorable_hmm_coupled_to_unfavorable_oscillation_uncoupled: prerequisite 'favorable_hmm_coupled__c3.5__ewma' not yet completed by its shard.
+Pipeline complete (shard 0 finalization done).

@@ -1,0 +1,675 @@
+{
+  "n_cells": 15,
+  "n_expected": 15,
+  "missing_cells": [],
+  "recompute_vs_driver_mismatches": [],
+  "regime_boundary": {
+    "low_max": 1.5,
+    "high_min": 8.0,
+    "transition_note": "cost ratios strictly between are 'transition'"
+  },
+  "wording_policy": "not detected at this budget (NOT evidence of inertness)",
+  "per_cell_test_power_warning": "per-cell 'attributed' flags have zero power at K_out=5; descriptive only. Use dr3_regime_inference for valid attribution.",
+  "authoritative_inference": "dtcoa_val.analysis.dr3_regime_inference",
+  "regime_rollup": {
+    "per_component": {
+      "no_memory": {
+        "mechanism": "memory",
+        "low_attributed": 0,
+        "low_total": 6,
+        "transition_attributed": 0,
+        "transition_total": 3,
+        "high_attributed": 0,
+        "high_total": 6
+      },
+      "no_decay": {
+        "mechanism": "decay",
+        "low_attributed": 0,
+        "low_total": 6,
+        "transition_attributed": 0,
+        "transition_total": 3,
+        "high_attributed": 0,
+        "high_total": 6
+      },
+      "no_propagation": {
+        "mechanism": "propagation",
+        "low_attributed": 0,
+        "low_total": 6,
+        "transition_attributed": 0,
+        "transition_total": 3,
+        "high_attributed": 0,
+        "high_total": 6
+      },
+      "no_stability": {
+        "mechanism": "stability",
+        "low_attributed": 0,
+        "low_total": 6,
+        "transition_attributed": 0,
+        "transition_total": 3,
+        "high_attributed": 0,
+        "high_total": 6
+      }
+    },
+    "low_regime_contributing_set": [],
+    "high_regime_contributing_set": [],
+    "sets_differ_between_regimes": false,
+    "H2_note": "Sets are built from 'attributed' cells only; components absent from a set are NOT detected at this budget, not proven inert."
+  },
+  "cells": {
+    "favorable_hmm_coupled__c0.5": {
+      "env": "favorable_hmm_coupled",
+      "cost_ratio": 0.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -1.0,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.36,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.1875,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.007690178881585214,
+        "stab_scale_median": 0.03335745671532509,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c1.5": {
+      "env": "favorable_hmm_coupled",
+      "cost_ratio": 1.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -1.0,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.04,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.12,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.01776269646377992,
+        "stab_scale_median": 0.002568198978958678,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c3.5": {
+      "env": "favorable_hmm_coupled",
+      "cost_ratio": 3.5,
+      "regime": "transition",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -1.0,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.36,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.28,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.010828569407785517,
+        "stab_scale_median": 0.0,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": true
+      }
+    },
+    "favorable_hmm_coupled__c8.0": {
+      "env": "favorable_hmm_coupled",
+      "cost_ratio": 8.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.04,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.28,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0020805324034572047,
+        "stab_scale_median": 0.019225157745028598,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "favorable_hmm_coupled__c20.0": {
+      "env": "favorable_hmm_coupled",
+      "cost_ratio": 20.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.1875,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.6,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.84,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.09585372008681599,
+        "stab_scale_median": 0.026327588997910854,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c0.5": {
+      "env": "unfavorable_oscillation_uncoupled",
+      "cost_ratio": 0.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.04,
+          "holm_p": 1.0,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.2,
+          "holm_p": 1.0,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.28,
+          "holm_p": 1.0,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0,
+        "stab_scale_median": 0.005565822125812467,
+        "prop_collapsed_to_zero": true,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c1.5": {
+      "env": "unfavorable_oscillation_uncoupled",
+      "cost_ratio": 1.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -1.0,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.36,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.44,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.009203130563192745,
+        "stab_scale_median": 0.0011145565872579305,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c3.5": {
+      "env": "unfavorable_oscillation_uncoupled",
+      "cost_ratio": 3.5,
+      "regime": "transition",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.04,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.6,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.6,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0892661927544894,
+        "stab_scale_median": 0.0013311654454739644,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c8.0": {
+      "env": "unfavorable_oscillation_uncoupled",
+      "cost_ratio": 8.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.28,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.6,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.52,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.2,
+          "holm_p": 1.0,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.008207074563433534,
+        "stab_scale_median": 0.0011037660173753294,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "unfavorable_oscillation_uncoupled__c20.0": {
+      "env": "unfavorable_oscillation_uncoupled",
+      "cost_ratio": 20.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.2,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.04,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.12,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0020805324034572047,
+        "stab_scale_median": 0.019225157745028598,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c0.5": {
+      "env": "collapse_moderate_coupled",
+      "cost_ratio": 0.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.12,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.68,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.04980941956018605,
+        "stab_scale_median": 0.00219404109572404,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c1.5": {
+      "env": "collapse_moderate_coupled",
+      "cost_ratio": 1.5,
+      "regime": "low",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.4375,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.52,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.36,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0019012790158300585,
+        "stab_scale_median": 0.022433918844942426,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c3.5": {
+      "env": "collapse_moderate_coupled",
+      "cost_ratio": 3.5,
+      "regime": "transition",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.68,
+          "holm_p": 0.125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.12,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.68,
+          "holm_p": 0.1875,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.04,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.3891775510322742,
+        "stab_scale_median": 0.026957804576305817,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c8.0": {
+      "env": "collapse_moderate_coupled",
+      "cost_ratio": 8.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 1.0,
+          "holm_p": 0.0625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.52,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.52,
+          "holm_p": 0.1875,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.12,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.0020805324034572047,
+        "stab_scale_median": 0.025841720107085346,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    },
+    "collapse_moderate_coupled__c20.0": {
+      "env": "collapse_moderate_coupled",
+      "cost_ratio": 20.0,
+      "regime": "high",
+      "attribution": {
+        "no_memory": {
+          "mechanism": "memory",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.2,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_decay": {
+          "mechanism": "decay",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.44,
+          "holm_p": 0.3125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_propagation": {
+          "mechanism": "propagation",
+          "attributed": false,
+          "cliffs_delta_vs_full": 0.36,
+          "holm_p": 0.625,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        },
+        "no_stability": {
+          "mechanism": "stability",
+          "attributed": false,
+          "cliffs_delta_vs_full": -0.12,
+          "holm_p": 0.8125,
+          "interpretation": "not detected at this budget (NOT evidence of inertness)"
+        }
+      },
+      "containment": {
+        "prop_scale_median": 0.020805672961627674,
+        "stab_scale_median": 0.019225157745028598,
+        "prop_collapsed_to_zero": false,
+        "stab_collapsed_to_zero": false
+      }
+    }
+  }
+}

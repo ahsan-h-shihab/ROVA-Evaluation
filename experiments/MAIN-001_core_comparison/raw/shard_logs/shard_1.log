@@ -1,0 +1,5 @@
+[shard 1/15] assigned 1 of 15 work units
+[run]  favorable_hmm_coupled__c1.5__static
+[run]  favorable_hmm_coupled__c1.5__ewma
+[run]  favorable_hmm_coupled__c1.5__rova
+[shard 1/15] assigned units complete.

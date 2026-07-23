@@ -1,0 +1,86 @@
+{
+  "experiment": "MAIN-001_core_comparison",
+  "manifest_reference": "EXPERIMENT_MANIFEST_FINAL.md (frozen rev. 5)",
+  "runbook_reference": "MAIN-001_EXECUTION_RUNBOOK.md",
+  "date_executed": "2026-07-08",
+  "status": "complete",
+
+  "git_commit": "7f624ca27a86fbbbe67afc68ebb886a4edbb67a2",
+  "git_commit_expected": "7f624ca27a86fbbbe67afc68ebb886a4edbb67a2",
+  "git_commit_match": true,
+
+  "environment_file": "raw/environment.txt",
+  "seed_verification": {
+    "file": "raw/seeds_verified.json",
+    "result": "PASSED",
+    "detail": "60 unique seeds, exactly 0..59, matching frozen protocol"
+  },
+
+  "budget": {
+    "name": "full",
+    "K_out": 5,
+    "K_in": 3,
+    "n_trials": 80,
+    "n_seeds": 60,
+    "cfg_overrides": {}
+  },
+  "cost_ratio_grid": [0.5, 1.5, 3.5, 8.0, 20.0],
+  "environments": [
+    "favorable_hmm_coupled",
+    "unfavorable_oscillation_uncoupled",
+    "collapse_moderate_coupled"
+  ],
+  "methods": ["static", "ewma", "rova"],
+  "full_scale_env_params_verified": {
+    "horizon": 250, "n_agents": 10, "graph_density": 0.3, "coupling": 0.3
+  },
+
+  "execution_host": {
+    "cpu": "AMD Ryzen 9 9950X (16 physical / 32 logical, single socket)",
+    "ram_observed": "59 GiB total / 51 GiB available",
+    "os": "Ubuntu, kernel 6.17.0-40-generic",
+    "python": "3.13.14",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "blas": "scipy-openblas 0.3.33 (DYNAMIC_ARCH)",
+    "gpu_used": false
+  },
+  "launch_config": {
+    "num_shards": 15,
+    "shard_assignment": "unit_index % 15",
+    "blas_thread_env": {"OMP_NUM_THREADS": 1, "OPENBLAS_NUM_THREADS": 1, "MKL_NUM_THREADS": 1, "NUMEXPR_NUM_THREADS": 1},
+    "cpu_affinity": "none (scheduler spreads 15 single-threaded procs across 16 physical cores)",
+    "detachment": "setsid",
+    "out_dir": "main001_out",
+    "wall_clock_approx": "~1 hour (15-way parallel)"
+  },
+
+  "completion_criteria": {
+    "required_manifest_entries": 61,
+    "required_entries_present": 61,
+    "method_hpo_units": 45,
+    "containment_reports": 15,
+    "dp_oracle_certified_equivalent": true,
+    "dp_oracle_max_discrepancy": 4.5075054799781356e-14,
+    "checkpoints_all_5_folds": true,
+    "fail_count": 0,
+    "stats_pass_saved": "stats_summary.json",
+    "reproducibility_verified": true
+  },
+
+  "deviations": [
+    {
+      "id": "manifest-lost-update-race",
+      "severity": "infrastructure (no scientific-data impact)",
+      "description": "run_pipeline._mark_done + utils.save_json perform non-atomic, unlocked read-modify-write on a single shared manifest.json. At 15 concurrent shards this loses updates; the live manifest ended with 4 of 61 entries. Latent bug (IMPLEMENTATION_STATUS reports the parallel path verified only at 2 shards, where collisions are rare).",
+      "data_impact": "none. Per-unit HPO checkpoints, containment reports, and DP-oracle JSON are each written by a single shard (units never overlap across shards) and were all validated: 45/45 checkpoints at exactly 5 folds with finite regret+CVaR, 15/15 containment reports, DP certified.",
+      "remediation": "Reconstructed manifest.json deterministically from the authoritative per-unit artifacts via raw/rebuild_and_validate.py (validates the 61 required entries while assembling). Raw raced manifest preserved as raw/manifest.live_raced.json. No scientific code, hyperparameter, environment, cost-grid, or protocol change.",
+      "authorized_by": "user decision 2026-07-08 (continue + reconstruct)"
+    },
+    {
+      "id": "distribution-shift-produced",
+      "severity": "none (optional/bonus)",
+      "description": "The runbook's shard-0 finalize step produced distribution_shift_report__{rova,ewma}.json. This is revision-stage and explicitly NOT a completion criterion (runbook section 10). Included as bonus artifacts; reuses already-tuned configs, no new HPO."
+    }
+  ]
+}

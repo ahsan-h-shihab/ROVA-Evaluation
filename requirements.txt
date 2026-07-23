@@ -1,0 +1,17 @@
+# Exact pins transcribed from the archived environment freeze of MAIN-001
+# (experiments/MAIN-001_core_comparison/raw/environment.txt; Python 3.13.14).
+# The ABLATION-001 freeze pins identical package versions (its
+# raw/environment.txt differs only in host-string format).
+# The replay package (reproduce/) needs numpy only.
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.63.0
+kiwisolver==1.5.0
+matplotlib==3.11.0
+numpy==2.5.1
+packaging==26.0
+pillow==12.3.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+scipy==1.18.0
+six==1.17.0
