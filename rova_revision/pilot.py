@@ -1,0 +1,113 @@
+"""Timing pilot (plan section 2, E-3).
+
+Times one outer fold, five candidates and one inner fold of each tuning
+method, on NON-EXPERIMENTAL seeds 1000-1059 with tags prefixed REV1_PILOT, in
+each environment at full size; times instance evaluation and one full-size
+DP solve; extrapolates to the unit plan. Regret values are not reported.
+"""
+import time
+
+import numpy as np
+
+from dtcoa_val.experiments.nested_hpo import _eval_config
+from dtcoa_val.experiments.search_space import sample_config
+
+from . import config as C
+from .archive import inner_folds, outer_folds
+from .coupled_dp import solve_world
+from .policies import ConstantLevel, LearnedCSPolicy, QLearnPolicy
+from .training import LEARNED_SPACE, QLEARN_SPACE, fit_learned, fit_qlearn
+from .units import FROZEN_CAMPAIGNS
+
+N_CAND = 5
+
+
+def _time_frozen(method, cfg, tag, ival):
+    cls, space = FROZEN_CAMPAIGNS[method]
+    rng = np.random.default_rng(0)
+    t0 = time.time()
+    for i in range(N_CAND):
+        _eval_config(cls, sample_config(space, rng), cfg, ival, tag=f"{tag}_hpo{i}")
+    return (time.time() - t0) / N_CAND
+
+
+def _time_trainable(method, cfg, tag, itrain, ival):
+    space = LEARNED_SPACE if method == "learned" else QLEARN_SPACE
+    fit = fit_learned if method == "learned" else fit_qlearn
+    pol = LearnedCSPolicy if method == "learned" else QLearnPolicy
+    rng = np.random.default_rng(0)
+    cache = {}
+    t0 = time.time()
+    fit(sample_config(space, rng), cfg, itrain, f"{tag}_train", cache)
+    t_first = time.time() - t0
+    t0 = time.time()
+    for i in range(N_CAND):
+        model = fit(sample_config(space, rng), cfg, itrain, f"{tag}_train", cache)
+        _eval_config(lambda m=model: pol(m), {}, cfg, ival, tag=f"{tag}_hpo{i}")
+    return (time.time() - t0) / N_CAND, t_first
+
+
+def run_pilot(profile, units):
+    folds = outer_folds(profile.seeds, profile.K_out)
+    outer_train, outer_test = folds[0]
+    itrain, ival = inner_folds(outer_train, profile.K_in, 0)[0]
+    per_env = {}
+    for env in C.ENV_NAMES:
+        cfg = C.cell_cfg(profile, env, 3.5)
+        tag = f"{profile.tag_prefix}__{env}__pilot"
+        row = {m: {"sec_per_candidate_fold": _time_frozen(m, cfg, f"{tag}_{m}", ival)}
+               for m in ("static", "ewma", "rova", "clairvoyant", "rova_single", "static_ext", "ewma_ext")}
+        for m in ("learned", "qlearn"):
+            per, first = _time_trainable(m, cfg, f"{tag}_{m}", list(itrain), ival)
+            row[m] = {"sec_per_candidate_fold": per, "sec_first_fit_incl_cache": first}
+        t0 = time.time()
+        _eval_config(lambda: ConstantLevel(5), {}, cfg, list(outer_test), tag=f"{tag}_eval")
+        row["_sec_per_instance"] = (time.time() - t0) / len(outer_test)
+        per_env[env] = row
+    t0 = time.time()
+    dp_rec = solve_world(C.cell_cfg(profile, C.DP_FULL_SIZE_ENV, 3.5), 1000, f"{profile.tag_prefix}_DP_pilot")
+    dp_sec = time.time() - t0
+    K, n_full = dp_rec["tau"] + 1, dp_rec["N"]
+
+    k_out, k_in, n_tr = profile.K_out, profile.K_in, profile.n_trials
+    estimate = {}
+    for u in units:
+        kind, p = u["kind"], u["params"]
+        env = p.get("env", C.ENV_NAMES[0])
+        row = per_env.get(env, per_env[C.ENV_NAMES[0]])
+        inst = row["_sec_per_instance"]
+        if kind in ("campaign_frozen", "campaign_sens", "campaign_advt", "campaign_tpe"):
+            m = p["method"]
+            sec = k_out * n_tr * k_in * row[m]["sec_per_candidate_fold"] + 60 * inst
+        elif kind == "campaign_trainable":
+            m = p["method"]
+            sec = k_out * (n_tr * k_in * row[m]["sec_per_candidate_fold"]
+                           + (k_in + 1) * row[m]["sec_first_fit_incl_cache"])
+            if m == "qlearn":
+                sec += k_out * 3 * row[m]["sec_first_fit_incl_cache"]
+        elif kind == "anchor_eval":
+            sec = 2 * 4 * 60 * inst
+        elif kind == "eval_cew":
+            sec = 14 * 60 * inst
+        elif kind == "eval_adv":
+            sec = 2 * 11 * 60 * inst
+        elif kind in ("eval_advt_cew",):
+            sec = 5 * 60 * inst
+        elif kind == "eval_sens_cew":
+            sec = 14 * 60 * inst
+        elif kind == "sweep":
+            sec = 20 * 60 * inst
+        elif kind == "dp_reduced":
+            sec = 60 * dp_sec * (K ** p["n"] / K ** n_full) * (4 ** p["n"] / 4 ** n_full)
+        elif kind == "dp_cew":
+            sec = 60 * dp_sec
+        else:
+            sec = 60.0
+        estimate.setdefault(u["tier"], 0.0)
+        estimate[u["tier"]] += sec
+    core_hours = {t: s / 3600.0 for t, s in estimate.items()}
+    return {"note": "timing only; non-experimental seeds; regret values not reported",
+            "per_env_timings": per_env, "dp_full_size_sec_per_world": dp_sec,
+            "estimated_core_hours_by_tier": core_hours,
+            "estimated_total_core_hours": sum(core_hours.values()),
+            "estimated_wall_hours_15_workers": sum(core_hours.values()) / 15.0}
