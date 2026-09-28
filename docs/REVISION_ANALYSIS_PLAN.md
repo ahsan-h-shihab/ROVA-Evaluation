@@ -333,3 +333,4 @@ No experiment requires a GPU.
 | 2026-09-29 | **R11 family.** Per cell: {tuned vs prop_scale = 0, tuned vs stab_scale = 0, tuned vs both = 0}, Holm within the cell; dose–response means with BCa intervals. | Specifies the family. |
 | 2026-09-29 | **R13 descriptive addition.** Per fold, the TPE best inner-validation score minus the archived random-search best (same validation worlds). Descriptive. | Direct optimizer comparison. |
 | 2026-09-29 | `PREREGISTRATION_DEVIATIONS.md` row B4 corrected to match R7 (reduced instances in both coupled environments). | Consistency with this plan. |
+| 2026-09-29 | **Output verification.** `rova_revision/verify_outputs.py` checks `SHA256SUMS`, every unit's result digest, completeness against the unit plan, the gate result, the analysis digest, and the environment record of every invocation. Nothing is written inside the output directory after `SHA256SUMS`. | Implementation of §7. |

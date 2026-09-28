@@ -1058,7 +1058,7 @@ def write_report(path, S, profile):
         L += ["", "## Figure errors", ""] + [f"- {e}" for e in S["figure_errors"]]
     if S.get("section_errors"):
         L += ["", "## Analysis section errors", ""] + [f"- {e['section']}: {e['error']}" for e in S["section_errors"]]
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(L) + "\n")
 
 
@@ -1150,7 +1150,7 @@ def run_analysis(profile, out_dir):
     _safe(E, "tables", write_tables, os.path.join(adir, "tables"), S)
     S["section_errors"] = E
     spath = os.path.join(adir, "summary.json")
-    with open(spath, "w") as f:
+    with open(spath, "w", newline="\n") as f:
         json.dump(S, f, indent=1, default=_jsonable)
     _safe(E, "report", write_report, os.path.join(adir, "REPORT.md"), S, profile)
     with open(spath, "rb") as f:

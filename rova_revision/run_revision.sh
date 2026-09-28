@@ -3,6 +3,7 @@
 #   bash rova_revision/run_revision.sh check OUT_ROOT     tests + environment guard
 #   bash rova_revision/run_revision.sh pilot OUT_ROOT     timing pilot -> OUT_ROOT/pilot_out
 #   bash rova_revision/run_revision.sh full  OUT_ROOT     scientific run -> OUT_ROOT/revision_out
+#   bash rova_revision/run_revision.sh verify OUT_ROOT    checksums, unit digests, completeness, gate
 # Optional environment: ROVA_TIERS (default A,B), ROVA_WORKERS (default 15),
 # ROVA_ENV_APPROVAL (written approval of a soft environment mismatch; recorded verbatim).
 set -euo pipefail
@@ -12,7 +13,7 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 export PYTHONPATH="$REPO${PYTHONPATH:+:$PYTHONPATH}"
 
-MODE="${1:?mode: check | pilot | full}"
+MODE="${1:?mode: check | pilot | full | verify}"
 OUT_ROOT="${2:?output root (outside the repository)}"
 mkdir -p "$OUT_ROOT"
 OUT_ROOT="$(cd "$OUT_ROOT" && pwd)"
@@ -38,6 +39,9 @@ case "$MODE" in
   full)
     python -m rova_revision.run_revision --profile full --out "$OUT_ROOT/revision_out" \
       --workers "$WORKERS" --tiers "$TIERS" "${APPROVAL_ARGS[@]}"
+    ;;
+  verify)
+    python -m rova_revision.verify_outputs --profile full --out "$OUT_ROOT/revision_out"
     ;;
   *)
     echo "unknown mode: $MODE" >&2; exit 64 ;;

@@ -44,7 +44,7 @@ def _now():
 def _atomic_write(path, obj):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
-    with open(tmp, "w") as f:
+    with open(tmp, "w", newline="\n") as f:
         json.dump(obj, f, indent=1, default=_jsonable)
     os.replace(tmp, path)
 
@@ -179,7 +179,7 @@ def write_checksums(out_dir):
                 continue
             entries.append(f"{_sha256(p)}  {rel}")
     entries.sort(key=lambda s: s.split("  ", 1)[1])
-    with open(os.path.join(out_dir, "SHA256SUMS"), "w") as f:
+    with open(os.path.join(out_dir, "SHA256SUMS"), "w", newline="\n") as f:
         f.write("\n".join(entries) + "\n")
     return len(entries)
 
@@ -197,7 +197,7 @@ def make_archive(out_dir):
     with tarfile.open(tar_path, "w:gz") as tar:
         tar.add(base, arcname=os.path.basename(base))
     digest = _sha256(tar_path)
-    with open(tar_path + ".sha256", "w") as f:
+    with open(tar_path + ".sha256", "w", newline="\n") as f:
         f.write(f"{digest}  {os.path.basename(tar_path)}\n")
     return tar_path, digest
 
@@ -288,15 +288,16 @@ def main(argv=None):
         else:
             summary[stage] = run_stage_parallel(stage_units, profile.name, out_dir, args.workers)
 
+    failures = [u for s in summary.values() for u in s.get("failed", [])]
     meta["runs"][-1].update({"finished": _now(), "stages": summary})
     _atomic_write(meta_path, meta)
+    _log(out_dir, f"done; failed units: {len(failures)}")
+    # Nothing is written inside out_dir after the checksums.
     n = write_checksums(out_dir)
-    _log(out_dir, f"SHA256SUMS written ({n} files)")
+    print(f"SHA256SUMS written ({n} files)", flush=True)
     if not args.no_archive:
         tar_path, digest = make_archive(out_dir)
-        _log(out_dir, f"archive {tar_path} sha256 {digest}")
-    failures = [u for s in summary.values() for u in s.get("failed", [])]
-    _log(out_dir, f"done; failed units: {len(failures)}")
+        print(f"archive {tar_path} sha256 {digest}", flush=True)
     return 0 if not failures else 1
 
 

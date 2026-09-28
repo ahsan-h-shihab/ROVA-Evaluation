@@ -26,6 +26,7 @@ to start from any other commit or from a modified working tree.
 | `run_revision.py` | orchestrator: stages, parallel execution, resume, checksums, archive |
 | `pilot.py` | timing pilot on non-experimental seeds (§2, E-3) |
 | `analysis.py` | statistical analysis, tables, figures and report (§5) |
+| `verify_outputs.py` | verification of a finished output directory (checksums, unit digests, completeness, gate, environment record) |
 
 ## Profiles
 
@@ -45,6 +46,7 @@ From a clean checkout of `revision-001-frozen`, with the output root outside the
 bash rova_revision/run_revision.sh check  /path/to/runs   # tests + environment guard
 bash rova_revision/run_revision.sh pilot  /path/to/runs   # timing pilot
 bash rova_revision/run_revision.sh full   /path/to/runs   # all tiers (A,B); resumable
+bash rova_revision/run_revision.sh verify /path/to/runs   # verify the finished output
 ```
 
 `full` writes `/path/to/runs/revision_out/` and `/path/to/runs/revision_out.tar.gz` with its
