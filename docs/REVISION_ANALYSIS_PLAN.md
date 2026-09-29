@@ -7,12 +7,15 @@ pre-registration of the original study. The commit that adds this file, tagged
 `revision-001-analysis-plan`, fixes its content; changes made before execution are recorded
 with dates in §10. The exact code that executes the plan is tagged `revision-001-frozen`.
 
-Companion record: [`PREREGISTRATION_DEVIATIONS.md`](PREREGISTRATION_DEVIATIONS.md).
+Companion records: [`PREREGISTRATION_DEVIATIONS.md`](PREREGISTRATION_DEVIATIONS.md) and the
+original internal protocol, published verbatim as
+[`PRE_REGISTERED_PROTOCOL.md`](PRE_REGISTERED_PROTOCOL.md).
 
 Every analysis below is labelled:
 **(R) restored** — committed in the original internal protocol but omitted in the executed
 study; **(N) new** — not in the original protocol; **(S) sensitivity** — a re-analysis of
-existing data or of existing tuned configurations.
+existing data or of existing tuned configurations; **(C) correction** — corrects a defect in a
+published analysis.
 
 ---
 
@@ -29,36 +32,51 @@ existing data or of existing tuned configurations.
 | Tuning budget | K_out = 5, K_in = 3, 80 random-search candidates per outer fold, drawn by the frozen `sample_config` from `default_rng(0)` |
 | Selection | minimum mean inner-fold validation regret (`nanargmin`; ties → earliest-sampled candidate) |
 | Primary metric | mean per-agent-step authorization regret per scenario instance (per-seed regret) |
-| Tail metric | CVaR-95 of per-seed regret per outer fold (co-primary, descriptive) |
+| Tail metric | CVaR-95 of per-seed regret (co-primary) |
 | Statistics | frozen `dtcoa_val/analysis/stats.py`: `wilcoxon_paired`, `cliffs_delta`, `holm_bonferroni`, `bca_bootstrap_ci` (5000 resamples, `default_rng(0)`) |
 | Negligibility band | \|Cliff's δ\| ≤ 0.147 |
 | Comparison rule | A vs B: "A lower-regret" iff Holm-significant Wilcoxon **and** \|δ\| > 0.147 **and** δ(A,B) < 0; symmetric for B; otherwise "no detected difference" |
+| Evaluation worlds for every between-method comparison | matched: one method-independent world per seed (§3) |
 | Regimes | low = {0.5, 1.5}; transition = {3.5}; high = {8.0, 20.0} |
 
 ### 1.1 Analytic facts fixed before execution
 
-- **F1 (oracle structure).** The oracle loss L(a; r, h) = π(a)·h·H + (1−π(a))·r·U with
-  π(a) = a/5 is linear in π, so the per-step optimum is always a ∈ {0, 5} (ties → 0).
-  Consequently a policy's per-step regret equals |hH − rU|·|π(a) − π(a\*)|. This is a
-  property of the evaluation loss, derived from `oracles.py`, not a result.
-- **F2 (world seeding).** `run_trial` seeds each simulated world with
-  `trial_seed(seed, 0, tag)`. In MAIN-001 and ABLATION-001 the tag contains the method name,
-  so different methods were evaluated on different, independently drawn worlds for the same
-  seed index. Within one tag, the random stream is action-independent, so two policies run
-  with the same (seed, tag) face common random numbers.
+- **F1 (one-step oracle structure only).** The oracle loss L(a; r, h) = π(a)·h·H + (1−π(a))·r·U
+  with π(a) = a/5 is linear in π, so the per-step (myopic) optimum is a level in {0, 5}
+  (ties → 0), and a policy's per-step regret equals |hH − rU|·|π(a) − π(a\*)|. This concerns a
+  single step. It does **not** establish that levels {0, 5} are optimal when actions change
+  future states; the sequential optimum is computed separately and exhaustively (R7).
+- **F2 (world seeding; defect in published analyses).** `run_trial` seeds each simulated world
+  with `trial_seed(seed, 0, tag)`. In MAIN-001 and ABLATION-001 the tag contains the method
+  name, so different methods were evaluated on different, independently drawn worlds for the
+  same seed index. Comparisons that paired methods by seed index therefore did not pair worlds.
+  Corrected by R2(d).
 - **F3 (regret basis).** Reported regret is computed from the expected per-step loss at the
   realized effective latent state (`runner.py`), not from realized harm events; realized
   events drive the failure dynamics only.
+- **F4 (common random numbers).** For a fixed configuration, seed and tag, every draw from the
+  world's random stream (latent trajectories, graph, observation noise and corruption, harm
+  events) happens whatever the actions are, so any two policies run on the same seed and tag
+  consume identical random numbers. Verified by instrumenting the random-number generator
+  (`rova_revision/tests/test_matched_worlds.py`).
 
 ## 2. Execution environment and gates
 
-**E-1. Machine.** All runs execute on the lab workstation that produced MAIN-001:
-AMD Ryzen 9 9950X (16 cores / 32 threads), Ubuntu, Python 3.13.14, numpy 2.5.1,
-scipy 1.18.0, single-threaded BLAS/OpenMP per process. `rova_revision/env_guard.py`
-verifies CPU model, logical-CPU count, host name, interpreter and library versions,
-thread variables, the git commit (must equal `revision-001-frozen`) and a clean working
-tree. A mismatch aborts the run unless an explicit, written approval is supplied, which is
-then recorded verbatim in `run_metadata.json`. No run is executed on any other machine.
+**E-1. Environment gate.** All runs execute on the lab workstation that produced MAIN-001. The
+reference is parsed from the archived execution records
+(`experiments/MAIN-001_core_comparison/config.json`, `…/raw/environment.txt`,
+`experiments/ABLATION-001_mechanism_attribution/config.json`): AMD Ryzen 9 9950X,
+16 physical / 32 logical cores, one socket; Ubuntu, kernel 6.17.0-40-generic, glibc 2.42;
+Python 3.13.14, numpy 2.5.1, scipy 1.18.0, matplotlib 3.11.0; BLAS scipy-openblas 0.3.33;
+15 worker processes. Before any stage runs, `rova_revision/env_guard.py` prints and records
+the observed CPU model and core and socket counts (read from `/proc/cpuinfo`), OS, kernel,
+glibc, interpreter, library versions, the BLAS configuration of numpy and scipy, the worker
+count, the thread variables, the git commit and the working-tree state, each beside its
+reference value. The host name and the interpreter path are recorded but are never taken as
+evidence of the hardware. Hard requirements (never overridable): commit = `revision-001-frozen`,
+clean working tree, every BLAS/OpenMP thread variable = 1, no GPU framework loaded. A soft
+mismatch aborts the run unless an explicit, written approval is supplied, which is recorded
+verbatim in `run_metadata.json`. No run is executed on any other machine.
 
 **E-2. Gate R0 — reproduction of archived results (must pass first).** On the target
 machine, replay all 45 MAIN-001 tuning units' outer-fold-0 test evaluations (540 scenario
@@ -68,22 +86,25 @@ intervals for mean per-seed regret for all 45 units and require exact agreement 
 `stats_summary.json`. Any failure aborts the run; no revision output is valid without a
 passing gate.
 
-**E-3. Timing pilot.** Before the full run, a timing pilot executes the learned-policy and
-Q-learning tuning loops for one outer fold, five candidates and one inner fold on
-**non-experimental seeds 1000–1059** with tags prefixed `REV1_PILOT`. It is used only for
-run-time extrapolation; its regret values are not analysed or reported.
+**E-3. Timing pilot.** Before the full run, a timing pilot times candidate evaluation of every
+tuning method (one outer fold, five candidates, one inner fold), instance evaluation, and one
+full-size exhaustive DP solve on **non-experimental seeds 1000–1059** with tags prefixed
+`REV1_PILOT`. It is used only for run-time extrapolation; its regret values are not analysed
+or reported.
 
 ## 3. World-seeding conventions and tag registry
 
-- **Own worlds (frozen convention).** A tuning campaign evaluates its selected configuration
-  on outer-test seeds with tag `<campaign_tag>_out{k}_test`.
-- **Common evaluation worlds (CEW, new).** For paired comparisons, every method's per-fold
-  tuned configuration is additionally evaluated on outer-test seeds of fold k with the
-  method-independent tag `REV1_CEW__{env}__c{c}_out{k}_test`. All methods then face
-  identical worlds (common random numbers), so Wilcoxon signed-rank pairs are genuine
-  matched pairs.
-- **Archived worlds.** Where stated, a new policy is also evaluated with an archived
-  method's tag, to pair it with that method's archived per-seed results.
+- **Matched worlds (mandatory for every between-method comparison).** Every method's per-fold
+  tuned configuration is evaluated on outer-test seeds of fold k with the method-independent
+  tag `REV1_CEW__{env}__c{c}_out{k}_test` (common evaluation worlds, CEW). A seed therefore
+  generates the identical world for every compared method (F4), and Wilcoxon signed-rank pairs
+  are genuine matched pairs. The same holds for every other comparison tag below; none contains
+  a method name (unit test).
+- **Own worlds (frozen convention).** A tuning campaign evaluates its selected configuration on
+  outer-test seeds with tag `<campaign_tag>_out{k}_test`. These outputs are kept for
+  provenance and are never used to pair methods.
+- **Archived worlds.** Where stated, a new policy is also evaluated with an archived method's
+  tag, to pair it with that method's archived per-seed results on that method's worlds.
 
 | Experiment | Tag pattern |
 |---|---|
@@ -93,8 +114,9 @@ run-time extrapolation; its regret values are not analysed or reported.
 | R5a | `REV1_ADV__{profile}__{env}__c{c}_out{k}_test` (run with and without the adversary) |
 | R5b | base `REV1_ADVT__{profile}__{env}__c{c}__{method}`; CEW `REV1_ADVT_CEW__{profile}__{env}__c{c}_out{k}_test` |
 | R7 | reduced instances `REV1_DP__{env}__N{n}__c{c}`; full-size collapse uses the CEW tags |
-| R8 / R10 / R12 | base `REV1__{env}__c{c}__{static_ext, ewma_ext, clairvoyant, rova_single}` |
+| R8 / R10 / R12 / R14 / R15 / R16 | base `REV1__{env}__c{c}__{method}` (method ∈ static_ext, ewma_ext, clairvoyant, rova_single, static_pb, ewma_pb, rova_pb, fx_…, ewma_out, rova_out) |
 | R9a | base `REV1_SENS__{K}__{env}__c{c}__{method}`; CEW `REV1_SENS_CEW__{K}__{env}__c{c}_out{k}_test` |
+| R2(d) distribution shift | `REV1_SHIFT_CEW__favorable_hmm_coupled_to_unfavorable_oscillation_uncoupled__c3.5_fold{k}` |
 | R11 | archived ROVA test tags `{env}__c{c}__rova_out{k}_test` |
 | R13 | archived campaign tags `{env}__c{c}__{method}` (deliberate: same validation and test worlds as the archived random search; outputs written to a separate directory) |
 
@@ -102,8 +124,8 @@ run-time extrapolation; its regret values are not analysed or reported.
 
 Methods referred to below: **static, ewma, rova** = archived MAIN-001 tuned configurations;
 **A0** = always full supervision (level 0); **A5** = always high autonomy (level 5);
-**learned**, **qlearn**, **static_ext**, **ewma_ext**, **clairvoyant**, **rova_single**,
-**\*_tpe** as defined below.
+**abl_full, abl_no_memory, abl_no_decay, abl_no_propagation, abl_no_stability** = archived
+ABLATION-001 tuned configurations; the other method names are defined below.
 
 ### R1 (R) — Constant reference policies
 Policies A0 and A5 (no parameters, no tuning) evaluated (i) on own worlds, (ii) on the CEW,
@@ -117,16 +139,30 @@ reported as "not defined" when R̄_best ≤ R̄_rova. Interpretation fixed now: 
 is no better than the best tuned baseline; 0 < G < 1 — the anchor closes a fraction 1 − G of
 the baseline-to-ROVA gap; G ≤ 0 — the anchor is at least as good as ROVA.
 
-### R2 (S/R) — Archived-data and matched-world re-analysis
+### R2 (S/R/C) — Archived-data re-analysis and the matched-world correction
 (a) BCa intervals (mean and median per-seed regret) for every method and cell. (b) Tuning
 curves at 20/40/80 candidates for every tuning campaign. (c) Variance decomposition of
 per-seed regret into between-outer-fold and within-fold components (one-way random effects;
-ICC). (d) **Matched-world re-analysis:** static, ewma and rova tuned configurations
-re-evaluated on the CEW; per-cell family {rova–static, rova–ewma, static–ewma} with the
-§1 rule; labels compared with the published verdict table. (e) Independent-samples
-sensitivity for the published own-world comparisons: two-sided Mann–Whitney U
-(`method="asymptotic"`, continuity correction). (f) Holm correction over wider families
-(§5.3). (g) Critical-difference diagrams per regime on the CEW (Friedman, Nemenyi).
+ICC). (d) **(C) Matched-world correction of every published analysis that depends on per-seed
+pairing (mandatory).** Affected published analyses: the MAIN-001 pairwise Wilcoxon tests and
+their Holm decisions (45 tests), the secondary Friedman/Holm omnibus, and the verdict tables
+derived from them (v1 and v2); ABLATION-001's per-cell attribution tests (paired by outer
+fold); and the distribution-shift comparison of ROVA and EWMA (method-specific shifted
+worlds). Correction: every published per-fold configuration (MAIN-001 static, ewma, rova;
+ABLATION-001 full and its four one-at-a-time variants) is evaluated on the CEW, and the
+published analysis code is re-run **unchanged** on these matched inputs —
+`experiments/MAIN-001_core_comparison/analysis.py` (`analyze_cell`), `verdicts/verdicts_v2.py`,
+`dtcoa_val/analysis/dr3_attribution.py` and `dr3_regime_inference.py` — with outputs written
+separately (`analysis/matched_world/`); archived files are never modified. Distribution
+shift: every method's per-fold configuration tuned on `favorable_hmm_coupled` at c = 3.5 is
+evaluated on `unfavorable_oscillation_uncoupled` for all 60 seeds with one method-independent
+tag per fold; methods are compared on the matched shifted worlds, and each method's
+degradation is measured against its matched in-distribution (CEW) regret. The per-cell
+families of §5 on the CEW are the revision's own analysis of the same comparisons.
+(e) Independent-samples sensitivity for the published own-world comparisons: two-sided
+Mann–Whitney U (`method="asymptotic"`, continuity correction), the test appropriate to
+unpaired worlds. (f) Holm correction over wider families (§5.3). (g) Critical-difference
+diagrams per regime on the CEW (Friedman, Nemenyi).
 
 ### R3 (R) — Learned cost-sensitive authorization policy (`learned`)
 A policy trained by direct optimization of the evaluation loss, using only the observation
@@ -138,7 +174,7 @@ channels available to the threshold baselines.
   standardized with training-set statistics.
 - **Objective:** cost-proportionate weighted logistic regression. Target y = restrict if
   Δ = h·H − r·U > 0; weight |Δ|; L2 penalty on non-intercept weights; L-BFGS-B from zero.
-  By F1 this is a convex surrogate of the exact regret of a two-action policy. The latent
+  By F1 this is a convex surrogate of the one-step regret of a two-action policy. The latent
   state is used only to compute training targets; the deployed policy sees observations only.
 - **Decision:** level 0 if the score is positive, otherwise level 5.
 - **Training data:** round 0 rolls out a uniformly random level per agent-step (its own
@@ -174,39 +210,48 @@ Profiles, exactly as defined in the frozen code (`experiments/campaign.py`):
 defect_t 0, spike 0.6, fake obs 0.9). A profile is run only in environments that contain
 all of its agents: `ramp_defect` in all three environments, `collusion` and `poisoning` in
 the two coupled environments (7 environment–profile pairs × 5 cost ratios).
-- **R5a (primary; deployment shift):** all methods' clean-tuned per-fold configurations and
-  A0/A5 are evaluated on outer-test seeds with the adversary active, and on the same worlds
-  without it. Outcomes: regret (primary), harm rate, unauthorized-unsafe rate.
+- **R5a (primary; deployment shift):** the clean-tuned per-fold configurations of static, ewma,
+  rova, learned, qlearn, static_ext, ewma_ext and clairvoyant, and A0/A5, are evaluated on
+  outer-test seeds with the adversary active, and on the same worlds without it. Outcomes:
+  regret (primary), harm rate, unauthorized-unsafe rate.
 - **R5b (secondary; adversary-aware tuning):** static, ewma and rova re-tuned with the
   adversary present (identical protocol), then evaluated on the adversarial CEW with A0/A5.
 
 ### R6 (R) — Measured decision cost
-Per-agent-step wall-clock time of `policy.step` for every method (tuned configurations or
-fitted models from this run) at N ∈ {1, 6, 10, 100, 1000} agents, 250 steps, fixed synthetic
-observations, 2 warm-up and 7 timed repetitions, single thread, with no other workload on
-the machine. Reported: median and inter-quartile range, the simulator's own per-step cost
-for context, the ratio to static, and the protocol's compute-conditional flag
-(ratio > 3). Tuning cost is reported in simulated trajectories per method.
+Per-agent-step wall-clock time of `policy.step` for every tier-A method (tuned configurations
+or fitted models from this run) and ROVA's default configuration, at N ∈ {1, 6, 10, 100, 1000}
+agents, 250 steps, fixed synthetic observations, 2 warm-up and 7 timed repetitions, single
+thread, with no other workload on the machine. Reported: median and inter-quartile range,
+the simulator's own per-step cost for context, the ratio to static, and the protocol's
+compute-conditional flag (ratio > 3). Tuning cost is reported in simulated trajectories per
+method and in measured unit time.
 
 ### R7 (R) — Sequential (dynamic-programming) oracle in coupled environments
 Given a world's exogenous trajectories (base reliability, base hazard, graph), the only
 action-dependent state is each agent's time since its last failure (τ + 1 values per agent).
-Exact backward induction over this state, restricted to levels {0, 5} per agent (valid
-because the expected cost-to-go is multilinear in the permission fractions), gives the
-optimal expected total loss V_opt; exact policy evaluation of the myopic oracle gives
-V_myopic.
-- **Reduced instances:** N = 2…6 for both coupled environments (for collapse, N = 6 is the
-  full evaluated size), 5 cost ratios, 60 seeds. Reported: per-agent-step gap
-  (V_myopic − V_opt)/(T·N) and the disagreement rate between the two policies' actions.
-- **Full-size collapse environment, method level:** V_opt for every CEW world; each method's
-  regret against the sequential reference, (Σ L(a) − V_opt)/(T·N), next to its regret
-  against the myopic reference; comparison labels recomputed.
+The sequential optimum V_opt is computed by **exhaustive** backward induction over all 6^N
+joint authorization levels (the expectation over failure patterns is contracted agent by
+agent, exactly); exact policy evaluation of the myopic oracle gives V_myopic. The solution
+restricted to {0, 5}^N is computed separately and its difference from V_opt is reported for
+every world as an empirical check; no result relies on that restriction, and no sequential
+claim is inferred from F1. Validation: the exhaustive solver equals explicit enumeration of
+every joint action on small instances; the transition model matches the frozen simulator
+(Monte Carlo); and the restriction check detects non-vertex optima when the model is altered
+to have them (falsification test).
+- **Instances:** reduced instances N = 2…6 for `favorable_hmm_coupled` and N = 2…5 for
+  `collapse_moderate_coupled`, plus `collapse_moderate_coupled` at its full size (N = 6) on the
+  CEW worlds; 5 cost ratios, 60 seeds. Reported: per-agent-step gap (V_myopic − V_opt)/(T·N),
+  the disagreement rate between the two policies' levels, and the rate of intermediate levels
+  (1–4) chosen by the optimal policy.
+- **Full-size collapse environment, method level:** each method's regret against the
+  sequential reference, (Σ L(a) − V_opt)/(T·N), next to its regret against the myopic
+  reference; comparison labels recomputed.
 - **Decision rule for the protocol's "substantial disagreement" clause (fixed now):** the
   disagreement is substantial if any cell-level comparison label among static, ewma, rova,
   A0, A5 and learned changes when the sequential reference replaces the myopic one. If so,
   the sequential-reference results are reported as authoritative for that environment.
-  The favorable environment (N = 10) is beyond exact solution; only its reduced instances
-  are reported.
+  The favorable environment at its full size (N = 10; 6^10 joint levels) is beyond exact
+  solution; only its reduced instances are reported.
 
 ### R8 (N) — Extended baseline search space (full restriction reachable)
 `static_ext` and `ewma_ext`: the frozen search spaces plus `cap_code` int [0, 24], mapped to
@@ -221,7 +266,7 @@ K2 observation delay (`delay` = 3 steps);
 K3 conflicting channel (`conflict_frac` = 1/6, one channel inverted).
 - **R9a (primary):** static, ewma and rova re-tuned under each perturbation (identical
   protocol) and evaluated on the perturbation's CEW with A0/A5; per-cell labels (§1 rule).
-- **R9b (secondary):** clean-tuned configurations of every method evaluated on the same
+- **R9b (secondary):** clean-tuned configurations of the R5a methods evaluated on the same
   perturbed CEW worlds.
 
 ### R10 (R) — Clairvoyant cost-sensitive threshold (`clairvoyant`)
@@ -232,10 +277,11 @@ to hazard) with `CLAIRVOYANT_SEARCH_SPACE`, tuned per cost ratio by the frozen
 ### R11 (R) — Penalty-magnitude sweep (behavioral containment)
 For every cell and outer fold, the archived ROVA configuration is evaluated on that fold's
 outer-test worlds (archived tags) with `prop_scale` swept over
-{0, 1e-3, 1e-2, 3e-2, 0.1, 0.3, 1, 3, 5} ∪ {tuned value}, other parameters fixed at their
-tuned values; likewise for `stab_scale`; plus both set to 0. The tuned point must reproduce
-the archived per-seed test regrets (< 1e-9), which checks the sweep. Reported: dose–response
-curves and, per cell, tuned-versus-zero comparisons over the 60 paired instances (§1 rule).
+{0, 1e-3, 1e-2, 3e-2, 0.1, 0.3, 1, 3, 5} ∪ {tuned value} (5 is the upper end of the searched
+range), other parameters fixed at their tuned values; likewise for `stab_scale`; plus both set
+to 0. The tuned point must reproduce the archived per-seed test regrets (< 1e-9), which checks
+the sweep. Reported: dose–response curves and, per cell, tuned-versus-zero comparisons over the
+60 paired instances (§1 rule).
 
 ### R12 (R) — Band-vector ablation (`rova_single`)
 ROVA with the tuned 5-band vector replaced by a single tuned threshold b (uniform
@@ -251,6 +297,79 @@ by the density ratio, per-dimension Parzen estimators with a uniform prior compo
 random stream). Reported: verdict family under TPE-tuned configurations and optimizer
 comparisons, on the CEW.
 
+### R14 (R/S) — Protocol-budget re-run (`static_pb`, `ewma_pb`, `rova_pb`)
+Static, EWMA and ROVA re-tuned with the protocol's example budget, K_in = 5 and 200
+random-search candidates per outer fold (protocol §3.4, §4), with candidates, splits, tags
+and selection exactly as the frozen procedure would draw them at that budget
+(`rova_revision/hpo_record.py`; equality with the frozen function is a unit test). Every
+candidate's inner score is recorded, giving tuning curves at the protocol's sub-budgets
+25/50/100/200 (§3.6) as well as 20/40/80. Evaluated on the CEW. Reported as a sensitivity
+analysis of the executed budget, not as a replacement for it.
+
+### R15 (R) — Factorial ablation (`fx_…`)
+The protocol's 2⁴ design over memory, decay, propagation and stability, each configuration
+re-tuned. A component is switched off through ROVA's structural flag and its now-inert
+parameters leave the search space, exactly as in the frozen one-at-a-time ablations. Decay acts
+only inside the memory branch, so with memory off the decay setting is inert (verified by a
+unit test): the 16 cells contain 12 distinct architectures. Five were tuned in ABLATION-001
+(archived configurations, evaluated on the CEW); the seven others are tuned now with the
+identical protocol. Removal tests: for each component and each of the 8 settings of the other
+three, the architecture with the component off versus on, on the CEW (28 non-trivial tests per
+cell; 4 structurally identical pairs are reported as such), Holm within the cell. Main effects
+and two-way interactions per world with BCa intervals are reported descriptively. DR3 is
+applied as in R17.
+
+### R16 (R) — Output-layer-only tuning (`ewma_out`, `rova_out`)
+The protocol's secondary paradigm (§2): each method's non-output parameters fixed at their
+defaults (EWMA smoothing constant 0.7; ROVA's default memory, decay, context and penalty
+parameters), only the threshold or band vector tuned, identical protocol and budget. The
+static baseline's output layer is its whole search space, so its output-layer-only version is
+`static` itself. Reported to help interpret where an advantage resides; not used to license
+superiority claims (protocol §2).
+
+### R17 (R) — Protocol decision rules and protocol-level statistics
+- **Protocol-family Holm.** Holm across every hypothesis test the revision reports (CEW
+  families and factorial removal tests, archived-world anchor family, R5a attacked families,
+  R5b, R9a, R9b, distribution-shift family, R11 tuned-versus-zero, R7 sequential-reference
+  families), as protocol §8 requires; "significant" in DR1–DR8 means rejected by this
+  correction. Not counted, as duplicates: the archived re-analyses (covered by S1), the
+  matched re-run of the published code (the same comparisons as F1/F8), myopic-reference R7
+  decision families (duplicates of F1–F3) and the clean-world F1 of R5a.
+- **DR1.** At each c, A is superior to B iff, in at least 2 of the 3 environments, the
+  difference is significant with δ(A,B) ≤ −0.147 and the 95% BCa intervals of mean regret are
+  disjoint (A's upper limit below B's lower limit), and in no environment is there a
+  significant difference favouring B (any magnitude). Symmetric in A and B.
+- **DR2.** A is generally superior iff DR1's pointwise conditions hold in every environment at
+  every c. If DR1 holds at some c only, the advantage is condition-dependent and the crossover
+  is located per environment: zero crossing of the mean paired gap between adjacent grid points,
+  linear in log c, with a percentile interval from 5000 world resamples drawn independently per
+  cost ratio (resolution limited by the five-point grid).
+- **DR3.** Per c, component X contributes iff removing X gives a significant degradation with
+  δ ≥ 0.147 in at least two environments at every one of its 8 factorial settings; at some but
+  not all settings, a joint/interacting effect; at none, not detected. Structurally identical
+  settings count as not passing.
+- **DR4.** Fires against a baseline iff ROVA weakly dominates it (no cell with a significant,
+  non-negligible difference favouring the baseline, and at least one cell where ROVA meets the
+  DR1 pointwise condition), no component contributes under DR3, and the R11 tuned-versus-zero
+  comparisons for `prop_scale` and `stab_scale` show no significant, non-negligible difference
+  in any cell.
+- **DR5.** Not applicable: the protocol requires TOST at a pre-registered margin but specified
+  no margin; the revision makes no equivalence claims.
+- **DR6.** At a given c, an effect that is significant and non-negligible in exactly one
+  environment is labelled environment-specific.
+- **DR7.** If A meets DR1 over B at some c and A's measured per-decision time exceeds 3× B's at
+  N ∈ {1, 6, 10} (R6), the claim is compute-conditional. Tuned variants are timed through their
+  policy class.
+- **DR8.** If |δ| < 0.147 at every c in every environment, the pair shows no practically
+  significant difference.
+- **Pairs.** All pairs of families F1–F6, F10 and F11.
+- **Secondary Bayesian ROPE layer.** For every paired comparison: the posterior of Cliff's δ
+  under the Bayesian bootstrap of the matched worlds (Dirichlet(1,…,1) weights; 4000 draws),
+  with the protocol's negligibility band [−0.147, 0.147] as the region of practical equivalence;
+  reported P(A lower), P(ROPE), P(B lower). A robustness complement; no decision depends on it.
+- **CVaR-95 for every comparison.** The difference of pooled CVaR-95 with a percentile interval
+  over paired world resamples (low precision: three tail instances per method).
+
 ## 5. Statistical analysis
 
 ### 5.1 Per-cell comparison families (Holm within family)
@@ -259,18 +378,23 @@ F1 {rova–static, rova–ewma, static–ewma}; F2 {rova, static, ewma} × {A0, 
 F3 {rova, static, ewma} × {learned, qlearn}; F4 {rova–static_ext, rova–ewma_ext,
 static_ext–static, ewma_ext–ewma}; F5 {rova–clairvoyant, rova–rova_single};
 F6 {rova_tpe–static_tpe, rova_tpe–ewma_tpe, static_tpe–ewma_tpe};
-F7 {rova_tpe–rova, static_tpe–static, ewma_tpe–ewma}.
-The same families are applied within R5a, R5b and R9a where the methods exist.
+F7 {rova_tpe–rova, static_tpe–static, ewma_tpe–ewma};
+F8 {abl_no_X–abl_full for X = memory, decay, propagation, stability};
+F9 the factorial removal tests of R15;
+F10 {rova_out–static, rova_out–ewma_out, rova–rova_out, ewma–ewma_out};
+F11 {rova_pb–static_pb, rova_pb–ewma_pb, static_pb–ewma_pb};
+F12 {rova_pb–rova, static_pb–static, ewma_pb–ewma};
+F13 {abl_full–rova} (the same method tuned on different worlds; a tuning-replication check).
+The same families are applied within R5a, R5b, R9a and R9b where the methods exist.
 
 ### 5.2 Intervals
 BCa (frozen function, 5000 resamples, `default_rng(0)`) for mean and median regret per
-method and cell, and for mean paired differences on the CEW. Pooled-seed CVaR-95 is reported
-with a percentile bootstrap interval and flagged as low-precision (three tail instances).
+method and cell, and for mean paired differences on the CEW. CVaR-95 as in R17.
 
-### 5.3 Multiplicity sensitivity
-S1: Holm across the 45 published MAIN-001 tests. S2: Holm across all tests in families
-F1–F7 over all cells. For each, cell labels that change relative to within-family Holm are
-listed.
+### 5.3 Multiplicity
+S1: Holm across the 45 published MAIN-001 tests. S2: Holm across all CEW tests in families
+F1–F7 over all cells. The protocol family of R17. For S1 and S2, cell labels that change
+relative to within-family Holm are listed.
 
 ## 6. Reporting rules (fixed now)
 
@@ -283,24 +407,31 @@ listed.
 4. A failing unit is re-run once; a persistent failure is reported, never silently dropped.
    A failing gate (§2) invalidates the run.
 5. Anything not specified here is labelled exploratory.
+6. For every published result that depended on seed pairing, the matched-world result is
+   reported as the corrected result and the published value is shown alongside, labelled as
+   own-world.
 
 ## 7. Outputs and provenance
 
-`revision_out/` contains `run_metadata.json` (environment guard, git commit, host, versions,
-thread settings, start/end times), per-unit checkpoints and evaluation records, logs,
-`analysis/` (tables, figures), a manifest of all units with SHA-256 digests, and
-`SHA256SUMS`. The directory is archived as a single `.tar.gz` with its SHA-256.
+`revision_out/` contains `run_metadata.json` (environment gate record, git commit, host,
+versions, thread settings, start/end times), the environment table of every invocation
+(`logs/environment_gate.txt`), per-unit checkpoints and evaluation records, logs, `analysis/`
+(tables, figures, the matched-world re-run of the published code in
+`analysis/matched_world/`), and `SHA256SUMS`. The directory is archived as a single `.tar.gz`
+with its SHA-256.
 
 ## 8. Compute estimate and tiers (Ryzen 9 9950X; single-threaded units)
 
 Basis: MAIN-001 ≈ 15 core-hours for 45 tuning units (≈ 20 core-min/unit), ≈ 0.07 s per
-250-step instance. Refined by the timing pilot (§2).
+250-step instance; exhaustive DP ≈ 1–2.5 min per full-size world. Refined by the timing pilot
+(§2).
 
 | Tier | Experiments | Core-hours (est.) |
 |---|---|---|
-| A | R0, R1, R2, R3, R4, R5a, R6, R7, R8, R9, R10 | 80–140 |
-| B | R5b, R11, R12, R13 | 50–70 |
-| Total | | 130–210 (≈ 9–14 h wall-clock with 15 workers) |
+| A | R0, R1, R2 (incl. the matched-world correction), R3, R4, R5a, R6, R7, R8, R9, R10, R17 | 90–130 |
+| B | R5b, R11, R12, R13 | 45–60 |
+| C | R14, R15, R16 | 65–90 |
+| Total | | 200–280 (≈ 14–19 h wall-clock with 15 workers) |
 
 No experiment requires a GPU.
 
@@ -308,9 +439,8 @@ No experiment requires a GPU.
 
 | Item | Reason |
 |---|---|
-| Full 2⁴ factorial re-tuned ablation (protocol §7) | The manuscript makes no component-interaction claims and none are requested. With 5 outer folds per cell and 6 cells per regime, interaction contrasts would be estimated with at least the variance of the one-at-a-time effects, for which per-cell tests already have no power; the design cannot license interaction claims. Recorded as a limitation. |
-| Bayesian ROPE layer (protocol §8) | No ROPE width was ever specified; choosing one after the results are known would be an unconstrained post-hoc choice. |
-| TOST equivalence (protocol §8) | Triggered only by equivalence claims, and none will be made (§6). |
+| TOST equivalence (protocol §8) | Triggered only by equivalence claims, and none will be made (§6). No margin was ever specified (DR5). |
+| Exact DP for `favorable_hmm_coupled` at its full size (N = 10) | 6^10 joint levels over 3^10 states per step; beyond exact solution. Reduced instances up to N = 6 are reported. |
 | Validation on public LLM-agent trajectory benchmarks | The regret endpoint requires, for every step, the loss of every authorization level (counterfactual outcomes) and a variable harm-to-utility cost ratio. Logged trajectory benchmarks record one action per step; LLM-judged scores would reintroduce a mechanism-dependent score. Mitigation: R9. |
 | Direct comparison with LLM guardrail systems | They judge natural-language actions with a language model and output allow/block; the simulator has no text and no language model, and inserting one would replace the independent oracle. Mitigation: R3, R4, R1. |
 | Richer learned policies (recurrent) | Optional in the protocol; R3 and R4 cover direct loss optimization and reinforcement learning. |
@@ -321,7 +451,7 @@ No experiment requires a GPU.
 |---|---|---|
 | 2026-09-29 | Initial version | — |
 | 2026-09-29 | **Code verification before the freeze (disclosure).** Unit tests, synthetic-data tests and an end-to-end plumbing profile (`smoke`) were run on a development laptop, not on the lab workstation, using only non-experimental seeds (≥ 1000), shrunken worlds (horizon 20, 3 agents) and synthetic data. The R0 gate code was exercised on one archived unit (outer fold 0 of `favorable_hmm_coupled`, c = 0.5, static), which reproduced the archived value exactly; the plumbing profile also exercised the archived re-analysis code on that one cell with 200 bootstrap resamples. Those outputs were used only to check that the code runs; they were not inspected as results and were deleted. No analysis in §4–§5 was executed. | E-1 says no run is executed on any other machine; this records exactly what code verification did run elsewhere. |
-| 2026-09-29 | **Execution rules.** A failed unit is re-run once automatically (all stages); an interrupted unit restarts from scratch, except learned, Q-learning and TPE campaigns, which resume from per-fold checkpoints (all candidates are drawn before the first fold, so a resumed run proposes the same candidates). The analysis stage re-runs on every invocation; an error in one analysis section is recorded in the report and in the exit status without discarding other sections. The output directory must lie outside the repository (the clean-tree check of E-1). | Implementation of §6 rule 4 and §7. |
+| 2026-09-29 | **Execution rules.** A failed unit is re-run once automatically (all stages); an interrupted unit restarts from scratch, except learned, Q-learning, TPE and protocol-budget campaigns, which resume from per-fold checkpoints (all candidates are drawn before the first fold, so a resumed run proposes the same candidates). The analysis stage re-runs on every invocation; an error in one analysis section is recorded in the report and in the exit status without discarding other sections. The output directory must lie outside the repository (the clean-tree check of E-1). | Implementation of §6 rule 4 and §7. |
 | 2026-09-29 | **E-3 scope.** The timing pilot also times candidate evaluation of the frozen-space methods, instance evaluation, and one full-size DP solve (seed 1000). Timing only. | Needed to extrapolate every unit type. |
 | 2026-09-29 | **R1 G interval.** The paired BCa interval resamples world indices with the frozen `bca_bootstrap_ci` (5000 resamples, `default_rng(0)`); the "best" baseline is fixed from the full-sample means. If the denominator is non-positive in any resample, the interval of G is not reported; G and the BCa interval of the denominator are reported instead. | A ratio's bootstrap interval is undefined when its denominator can reach zero. |
 | 2026-09-29 | **R1 (iii) family.** Per cell: {static, ewma, rova} × {A0, A5}, each comparison on that method's archived test worlds (pairing by seed), Holm within these six, §1 rule. | Specifies the family. |
@@ -334,3 +464,10 @@ No experiment requires a GPU.
 | 2026-09-29 | **R13 descriptive addition.** Per fold, the TPE best inner-validation score minus the archived random-search best (same validation worlds). Descriptive. | Direct optimizer comparison. |
 | 2026-09-29 | `PREREGISTRATION_DEVIATIONS.md` row B4 corrected to match R7 (reduced instances in both coupled environments). | Consistency with this plan. |
 | 2026-09-29 | **Output verification.** `rova_revision/verify_outputs.py` checks `SHA256SUMS`, every unit's result digest, completeness against the unit plan, the gate result, the analysis digest, and the environment record of every invocation. Nothing is written inside the output directory after `SHA256SUMS`. | Implementation of §7. |
+| 2026-09-29 | **Matched-world correction made mandatory and complete (R2(d), §3, F2, F4, §6 rule 6).** Previously a re-analysis of MAIN-001 labels only. Now: every published analysis that depends on per-seed pairing — MAIN-001 pairwise tests and Friedman omnibus, both verdict tables, ABLATION-001 per-cell attribution tests, and the distribution-shift comparison — is recomputed on matched worlds, with the published code re-run unchanged on matched inputs; ABLATION-001's configurations are added to the CEW evaluation; the regime-level attribution inference (unpaired, cells as units) is also recomputed on matched worlds. Unit tests verify that every compared policy consumes the identical random stream on a shared tag and that the archived tags did not. | The defect of F2 must be corrected, not only disclosed. |
+| 2026-09-29 | **Sequential-oracle claim separated from the one-step structure (F1, R7).** V_opt is now computed by exhaustive search over all joint levels; the {0, 5} restriction is reported per world as a check, not assumed. `collapse_moderate_coupled` at N = 6 is solved on the CEW worlds only (its reduced-instance set now ends at N = 5). | The one-step linearity of F1 does not by itself establish sequential optimality. |
+| 2026-09-29 | **Environment gate extended (E-1).** Reference parsed from the archived execution records; CPU model, core and socket counts read from `/proc/cpuinfo`; kernel, glibc, BLAS configuration and worker count added; printed and recorded before any stage; no GPU framework may be loaded. | Correspondence with the MAIN-001 workstation must be demonstrated, not inferred from the host name or interpreter path. |
+| 2026-09-29 | **Restored protocol analyses R14, R15, R16, R17 added; §9 entries for the factorial ablation and the Bayesian ROPE layer removed.** The factorial ablation, the protocol-budget sensitivity, the output-layer-only paradigm, the mechanical application of DR1–DR8, the protocol-family Holm correction, the Bayesian ROPE layer (using the protocol's own negligibility band) and CVaR-95 comparisons are feasible and are now executed. The operationalizations in R17 were chosen now, after MAIN-001 and ABLATION-001 results were known and before any revision analysis was executed. | Completing the feasible commitments of the original protocol. |
+| 2026-09-29 | **Tiers and evaluation units.** Tier C added (R14–R16). CEW evaluation is split into one unit per tier so later-tier methods are evaluated when tiers run in separate invocations. R5a, R9b and R6 use the tier-A methods (`rova_single`, a tier-B method, was removed from them). | Scheduling correctness. |
+| 2026-09-29 | **Additional code verification on the development laptop (disclosure).** Full-size exhaustive DP timing on one world per coupled environment (non-experimental seed 5000); the unit and smoke tests listed above, now including evaluation of archived ABLATION-001 configurations on non-experimental seeds and shrunken worlds; timing-pilot code on shrunken worlds. Outputs were used only to check the code and were deleted. No study seed was simulated other than the R0 gate unit already disclosed. | Complete disclosure of pre-freeze computation. |
+| 2026-09-29 | **Protocol document published** as `docs/PRE_REGISTERED_PROTOCOL.md`, byte-identical to the internal copy (SHA-256 recorded in `PREREGISTRATION_DEVIATIONS.md`). | Public reproducibility record. |

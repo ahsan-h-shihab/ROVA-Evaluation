@@ -50,7 +50,7 @@ def test_anchor_pairs_with_every_archived_seed():
             for m in C.ARCHIVED_METHODS:
                 res[A][f"on_{m}_worlds"] = _recs(lambda k, m=m: f"{C.archived_tag(ENV, CC, m)}_out{k}_test", rng)
         _write(out, UN.uid(2, "anchor_eval", env=ENV, c=CC), res)
-        a = AN.anchor_cell(FULL, out, ENV, CC, 100)
+        a = AN.anchor_cell(FULL, out, ENV, CC, 100, 50)
         fam = a["archived_worlds"]["family"]
         assert len(fam) == 6 and all("label" in r for r in fam)
         for r in fam:
@@ -74,7 +74,7 @@ def test_sweep_and_tpe_scientific_paths():
                              "regrets": (rng.uniform(0.1, 0.2, len(seeds)) + (0.0 if label == "tuned" else 0.05)).tolist()})
             repro.append({"outer_fold": k, "max_abs_diff": 0.0, "ok": True})
         _write(out, UN.uid(2, "sweep", env=ENV, c=CC), {"rows": rows, "reproduction": repro, "grid": UN.SWEEP_GRID})
-        sw = AN.sweep_cells(FULL, out, 100)
+        sw = AN.sweep_cells(FULL, out, 100, 50)
         cell = sw[f"{ENV}|{CC}"]
         assert cell["status"] == "ok" and cell["reproduction_ok"] is True
         assert [p["value"] for p in cell["dose_response"]["prop_scale"]] == sorted(UN.SWEEP_GRID)
@@ -110,7 +110,8 @@ def test_dp_substantial_disagreement_branch():
                 tag = C.cew_tag(FULL, env, c, k)
                 for s in seeds:
                     vopt = float(rng.uniform(100, 110))
-                    dp.append({"seed": s, "tag": tag, "N": 6, "T": 250, "V_opt": vopt, "V_myopic": vopt + 5})
+                    dp.append({"seed": s, "tag": tag, "N": 6, "T": 250, "V_opt": vopt, "V_myopic": vopt + 5,
+                               "vertex_minus_full": 0.0, "intermediate_level_rate": 0.0})
                     base = float(rng.uniform(0.0, 0.01))
                     # myopic reference: rova lower; sequential reference (total loss): rova higher
                     loss = {"rova": vopt + 30, "static": vopt + 10, "ewma": vopt + 20, "A0": vopt + 40,
@@ -122,7 +123,7 @@ def test_dp_substantial_disagreement_branch():
                                             rng.normal(0, 0.1)))
             _write(out, UN.uid(2, "dp_cew", c=c), {"env": env, "c": c, "records": dp})
             raw[(env, c)] = {"records": recs}
-        res = AN.dp_sequential(FULL, out, raw, set(), 100)
+        res = AN.dp_sequential(FULL, out, raw, set(), 100, 50)
         assert res["decision"].startswith("substantial"), res["decision"]
         ch = {(x["family"], x["pair"]) for x in res["label_changes"]}
         assert ("F1", "rova_vs_static") in ch
@@ -170,7 +171,8 @@ def test_run_analysis_on_sparse_full_output_and_section_errors():
         res = AN.run_analysis(FULL, out)
         assert res["section_errors"] == [], res["section_errors"]
         assert os.path.exists(os.path.join(out, "analysis", "REPORT.md"))
-        assert res["completeness"]["done"] == 0 and len(res["completeness"]["not_run"]) == 592
+        assert res["completeness"]["done"] == 0
+        assert len(res["completeness"]["not_run"]) == len(UN.enumerate_units(FULL)) - 1
 
         def boom(*a):
             raise RuntimeError("synthetic section failure")

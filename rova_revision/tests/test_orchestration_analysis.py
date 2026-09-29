@@ -184,14 +184,15 @@ def test_dp_sequential_detects_missing_world():
         c = SMOKE.grid[0]
         u = UN.uid(2, "dp_cew", c=c)
         os.makedirs(os.path.join(out, "units", u))
-        dp = {"records": [{"seed": 1000, "tag": "W", "N": 2, "T": 10, "V_opt": 1.0, "V_myopic": 1.5}]}
+        dp = {"records": [{"seed": 1000, "tag": "W", "N": 2, "T": 10, "V_opt": 1.0, "V_myopic": 1.5,
+                            "vertex_minus_full": 0.0, "intermediate_level_rate": 0.0}]}
         with open(os.path.join(out, "units", u, "result.json"), "w") as f:
             json.dump(dp, f)
         open(os.path.join(out, "units", u, "done.json"), "w").close()
         r = lambda tag: {"outer_fold": 0, "seed": 1000, "tag": tag, "sum_loss": 3.0, "n_agent_steps": 20,
                          "regret": 0.05}
         raw = {("collapse_moderate_coupled", c): {"records": {"rova": [r("W")], "static": [r("X")]}}}
-        res = dp_sequential(SMOKE, out, raw, set(), 50)
+        res = dp_sequential(SMOKE, out, raw, set(), 50, 50)
         cell = res["cells"][str(c)]
         assert any("no DP world" in p for p in cell["problems"]), cell["problems"]
         assert abs(cell["methods"]["rova"]["sequential_regret"]["mean"] - (3.0 - 1.0) / 20) < 1e-12

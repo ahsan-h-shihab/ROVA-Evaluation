@@ -6,7 +6,7 @@ Other modes:
     --profile pilot   timing pilot on non-experimental seeds (plan section 2, E-3)
     --profile smoke   plumbing check on non-experimental seeds and shrunken worlds
     --list            print the unit plan and exit
-    --tiers A         restrict to tier A (default: A,B)
+    --tiers A         restrict to tier A (default: A,B,C)
     --approval TEXT   written approval for a soft environment mismatch (recorded)
 
 The environment guard must pass for the ``full`` and ``pilot`` profiles.
@@ -207,7 +207,7 @@ def main(argv=None):
     ap.add_argument("--profile", choices=sorted(PROFILES), default="smoke")
     ap.add_argument("--out", required=False)
     ap.add_argument("--workers", type=int, default=15)
-    ap.add_argument("--tiers", default="A,B")
+    ap.add_argument("--tiers", default="A,B,C")
     ap.add_argument("--approval", default=None)
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--no-archive", action="store_true")
@@ -226,17 +226,20 @@ def main(argv=None):
     if not args.out:
         ap.error("--out is required")
     out_dir = os.path.abspath(args.out)
-    from .env_guard import REPO, check
+    from .env_guard import REPO, check, format_table
     if _inside(out_dir, REPO):
         ap.error("--out must be outside the repository (the environment guard requires a clean working tree)")
     os.makedirs(out_dir, exist_ok=True)
 
-    guard = check(approval=args.approval)
+    guard = check(approval=args.approval, workers=args.workers)
+    table = format_table(guard)
+    print(table, flush=True)
+    os.makedirs(os.path.join(out_dir, "logs"), exist_ok=True)
+    with open(os.path.join(out_dir, "logs", "environment_gate.txt"), "a", newline="\n") as f:
+        f.write(f"[{_now()}] profile={profile.name} tiers={','.join(tiers)}\n{table}\n\n")
     if profile.name in ("full", "pilot") and not guard["passed"]:
         _atomic_write(os.path.join(out_dir, "env_guard_FAILED.json"), guard)
-        print("ENVIRONMENT GUARD FAILED — nothing was run. See env_guard_FAILED.json.", file=sys.stderr)
-        print(json.dumps({"hard_failed": guard["hard_failed"], "soft_failed": guard["soft_failed"]}, indent=1),
-              file=sys.stderr)
+        print("ENVIRONMENT GATE FAILED — nothing was run. See env_guard_FAILED.json.", file=sys.stderr)
         return 2
 
     meta_path = os.path.join(out_dir, "run_metadata.json")

@@ -2,8 +2,10 @@
 
 Stages: 1 gate; 2 tuning campaigns and evaluations that need no new tuning;
 3 evaluations of tuned configurations; 4 decision-cost benchmark (alone);
-5 analysis. Unit identifiers are built only by ``uid()`` so producers and
-consumers agree.
+5 analysis. Tiers: A (core revision analyses and the matched-world correction),
+B and C (restored protocol analyses). Evaluation units are split by tier so a
+later tier's methods are evaluated even when tiers run in separate invocations.
+Unit identifiers are built only by ``uid()`` so producers and consumers agree.
 """
 import json
 import os
@@ -12,13 +14,14 @@ from dtcoa_val.baselines.baselines import EWMA, OracleLite, StaticThreshold
 from dtcoa_val.dtcoa_tunable import DTCOATunable
 from dtcoa_val.experiments.nested_hpo import _eval_config, nested_cv_hpo
 from dtcoa_val.experiments.search_space import (BAND_DIM, BAND_HIGH, BAND_LOW, CLAIRVOYANT_SEARCH_SPACE,
-                                                EWMA_SEARCH_SPACE, ROVA_SEARCH_SPACE,
-                                                STATIC_THRESHOLD_SEARCH_SPACE)
+                                                EWMA_SEARCH_SPACE, ROVA_ABLATIONS, ROVA_SEARCH_SPACE,
+                                                STATIC_THRESHOLD_SEARCH_SPACE, make_ablation_factory)
 
 from . import config as C
-from .archive import load_archived, outer_folds
+from .archive import load_archived, load_archived_ablation, outer_folds
 from .coupled_dp import solve_world
 from .gate import run_gate
+from .hpo_record import nested_cv_hpo_record
 from .instrument import evaluate_folds
 from .overhead import benchmark
 from .policies import (CappedEWMA, CappedStaticThreshold, ConstantLevel, LearnedCSPolicy,
@@ -27,7 +30,7 @@ from .tpe import nested_cv_tpe
 from .training import nested_cv_trainable
 
 # --------------------------------------------------------------------------- #
-# Search spaces added by the revision (plan R8, R12)
+# Search spaces and policy factories added by the revision
 # --------------------------------------------------------------------------- #
 BAND = ("band_vector", BAND_DIM, BAND_LOW, BAND_HIGH)
 CAP = ("int_uniform", 0, 24)
@@ -37,6 +40,28 @@ ROVA_SINGLE_SPACE = {}
 for _k, _v in ROVA_SEARCH_SPACE.items():
     ROVA_SINGLE_SPACE["b" if _k == "bands" else _k] = ("uniform", BAND_LOW, BAND_HIGH) if _k == "bands" else _v
 
+# Protocol section 2, secondary paradigm (plan R16): non-output parameters fixed at
+# the classes' defaults; only the threshold / band vector is tuned. For the static
+# baseline the output layer is its whole search space, so it equals `static`.
+EWMA_OUT_SPACE = {"thr": BAND}
+ROVA_OUT_SPACE = {"bands": BAND}
+
+ARCH_BY_NAME = {C.architecture_name(s): s for s in C.ARCHITECTURES}
+
+
+def architecture_spec(name):
+    """(policy factory, search space) of a factorial architecture (plan R15)."""
+    off = ARCH_BY_NAME[name]
+    fixed = {C.COMPONENT_SWITCH[x]: False for x in C.COMPONENTS if x in off}
+    dropped = {p for x in off for p in C.COMPONENT_PARAMS[x]}
+    space = {k: v for k, v in ROVA_SEARCH_SPACE.items() if k not in dropped}
+    return make_ablation_factory(DTCOATunable, fixed), space
+
+
+# ABLATION-001's own factories, used to evaluate its archived configurations.
+ABLATION_FACTORIES = {"full": DTCOATunable}
+ABLATION_FACTORIES.update({n: make_ablation_factory(DTCOATunable, s["fixed_kwargs"]) for n, s in ROVA_ABLATIONS.items()})
+
 FROZEN_CAMPAIGNS = {
     "static": (StaticThreshold, STATIC_THRESHOLD_SEARCH_SPACE),
     "ewma": (EWMA, EWMA_SEARCH_SPACE),
@@ -45,12 +70,22 @@ FROZEN_CAMPAIGNS = {
     "ewma_ext": (CappedEWMA, EWMA_EXT_SPACE),
     "clairvoyant": (OracleLite, CLAIRVOYANT_SEARCH_SPACE),
     "rova_single": (rova_single, ROVA_SINGLE_SPACE),
+    "ewma_out": (EWMA, EWMA_OUT_SPACE),
+    "rova_out": (DTCOATunable, ROVA_OUT_SPACE),
 }
+FROZEN_CAMPAIGNS.update({m: architecture_spec(m) for m in C.FACTORIAL_NEW_METHODS})
+PREREG_BUDGET_METHODS = {"static_pb": "static", "ewma_pb": "ewma", "rova_pb": "rova"}
+
 SWEEP_GRID = [0.0, 1e-3, 1e-2, 3e-2, 0.1, 0.3, 1.0, 3.0, 5.0]
-CLEAN_METHODS = ["static", "ewma", "rova", "A0", "A5", "learned", "qlearn", "static_ext", "ewma_ext",
-                 "clairvoyant", "rova_single", "static_tpe", "ewma_tpe", "rova_tpe"]
 ROBUSTNESS_METHODS = ["static", "ewma", "rova", "A0", "A5", "learned", "qlearn", "static_ext", "ewma_ext",
-                      "clairvoyant", "rova_single"]
+                      "clairvoyant"]
+CEW_TIER_METHODS = {
+    "A": ROBUSTNESS_METHODS + C.ABLATION_ARCHIVED_METHODS,
+    "B": ["rova_single", "static_tpe", "ewma_tpe", "rova_tpe"],
+    "C": C.FACTORIAL_NEW_METHODS + ["ewma_out", "rova_out"] + list(PREREG_BUDGET_METHODS),
+}
+CEW_UNIT_KIND = {"A": "eval_cew", "B": "eval_cew_b", "C": "eval_cew_c"}
+CLEAN_METHODS = [m for t in ("A", "B", "C") for m in CEW_TIER_METHODS[t]]
 
 
 def uid(stage, kind, **p):
@@ -70,7 +105,12 @@ def load_result(out_dir, u):
         return json.load(f)
 
 
-def enumerate_units(profile, tiers=("A", "B")):
+def _dp_cost(n):
+    return {6: 90, 5: 15}.get(n, 3)
+
+
+def enumerate_units(profile, tiers=("A", "B", "C")):
+    """``cost`` is a rough core-minute estimate, used only to start long units first."""
     units = []
 
     def add(stage, tier, kind, cost, **p):
@@ -81,35 +121,42 @@ def enumerate_units(profile, tiers=("A", "B")):
     for env in C.ENV_NAMES:
         n = C.cell_cfg(profile, env, 1.0).get("n_agents", 1)
         for c in profile.grid:
-            add(2, "A", "anchor_eval", 2 * n, env=env, c=c)
-            add(2, "A", "campaign_trainable", 60 * n, method="learned", env=env, c=c)
-            add(2, "A", "campaign_trainable", 120 * n, method="qlearn", env=env, c=c)
+            add(2, "A", "anchor_eval", n, env=env, c=c)
+            add(2, "A", "campaign_trainable", 6 * n, method="learned", env=env, c=c)
+            add(2, "A", "campaign_trainable", 15 * n, method="qlearn", env=env, c=c)
             for m in ("static_ext", "ewma_ext", "clairvoyant"):
-                add(2, "A", "campaign_frozen", 15 * n, method=m, env=env, c=c)
+                add(2, "A", "campaign_frozen", 4 * n, method=m, env=env, c=c)
             for pert in C.PERTURBATIONS:
                 for m in C.ARCHIVED_METHODS:
-                    add(2, "A", "campaign_sens", 20 * n, pert=pert, method=m, env=env, c=c)
-            add(2, "B", "campaign_frozen", 20 * n, method="rova_single", env=env, c=c)
+                    add(2, "A", "campaign_sens", 4 * n, pert=pert, method=m, env=env, c=c)
+            add(2, "B", "campaign_frozen", 4 * n, method="rova_single", env=env, c=c)
             for m in C.ARCHIVED_METHODS:
-                add(2, "B", "campaign_tpe", 22 * n, method=m, env=env, c=c)
+                add(2, "B", "campaign_tpe", 4 * n, method=m, env=env, c=c)
             for adv in C.ADVERSARY_PROFILES:
                 if C.adversary_valid(adv, env, profile):
                     for m in C.ARCHIVED_METHODS:
-                        add(2, "B", "campaign_advt", 20 * n, adv=adv, method=m, env=env, c=c)
-            add(2, "B", "sweep", 3 * n, env=env, c=c)
-            add(3, "A", "eval_cew", 6 * n, env=env, c=c)
+                        add(2, "B", "campaign_advt", 4 * n, adv=adv, method=m, env=env, c=c)
+            add(2, "B", "sweep", n, env=env, c=c)
+            for m in C.FACTORIAL_NEW_METHODS + ["ewma_out", "rova_out"]:
+                add(2, "C", "campaign_frozen", 4 * n, method=m, env=env, c=c)
+            for m in PREREG_BUDGET_METHODS:
+                add(2, "C", "campaign_prereg_budget", 10 * n, method=m, env=env, c=c)
+            for tier, kind in CEW_UNIT_KIND.items():
+                add(3, tier, kind, n, env=env, c=c)
             for pert in C.PERTURBATIONS:
-                add(3, "A", "eval_sens_cew", 6 * n, pert=pert, env=env, c=c)
+                add(3, "A", "eval_sens_cew", n, pert=pert, env=env, c=c)
             for adv in C.ADVERSARY_PROFILES:
                 if C.adversary_valid(adv, env, profile):
-                    add(3, "A", "eval_adv", 8 * n, adv=adv, env=env, c=c)
-                    add(3, "B", "eval_advt_cew", 2 * n, adv=adv, env=env, c=c)
+                    add(3, "A", "eval_adv", 2 * n, adv=adv, env=env, c=c)
+                    add(3, "B", "eval_advt_cew", n, adv=adv, env=env, c=c)
+    add(3, "A", "eval_shift_cew", 2)
     for env, sizes in profile.dp_sizes.items():
         for n in sizes:
             for c in profile.grid:
-                add(2, "A", "dp_reduced", 3 ** n, env=env, n=n, c=c)
+                add(2, "A", "dp_reduced", _dp_cost(n), env=env, n=n, c=c)
+    n_full = C.cell_cfg(profile, C.DP_FULL_SIZE_ENV, 1.0).get("n_agents", 1)
     for c in profile.grid:
-        add(2, "A", "dp_cew", 3 ** 6, c=c)
+        add(2, "A", "dp_cew", _dp_cost(n_full), c=c)
     add(4, "A", "overhead", 1)
     add(5, "A", "analysis", 1)
     return [u for u in units if u["tier"] in tiers]
@@ -145,6 +192,11 @@ def method_makers(profile, out_dir, env, c, names):
                 arch = load_archived(env, c, name)
                 makers[name] = _config_maker(FROZEN_CAMPAIGNS[name][0],
                                              [arch[k]["best_config"] for k in range(profile.K_out)])
+            elif name.startswith("abl_"):
+                variant = name[4:]
+                arch = load_archived_ablation(env, c, variant)
+                makers[name] = _config_maker(ABLATION_FACTORIES[variant],
+                                             [arch[k]["best_config"] for k in range(profile.K_out)])
             elif name in ("learned", "qlearn"):
                 res = load_result(out_dir, uid(2, "campaign_trainable", method=name, env=env, c=c))
                 if res is None:
@@ -159,6 +211,13 @@ def method_makers(profile, out_dir, env, c, names):
                     missing.append(name)
                     continue
                 makers[name] = _config_maker(FROZEN_CAMPAIGNS[base][0], [f["best_config"] for f in res["results"]])
+            elif name in PREREG_BUDGET_METHODS:
+                res = load_result(out_dir, uid(2, "campaign_prereg_budget", method=name, env=env, c=c))
+                if res is None:
+                    missing.append(name)
+                    continue
+                base = PREREG_BUDGET_METHODS[name]
+                makers[name] = _config_maker(FROZEN_CAMPAIGNS[base][0], [f["best_config"] for f in res["results"]])
             else:
                 res = load_result(out_dir, uid(2, "campaign_frozen", method=name, env=env, c=c))
                 if res is None:
@@ -170,8 +229,8 @@ def method_makers(profile, out_dir, env, c, names):
     return makers, missing
 
 
-def _evaluate_all(profile, cfg, makers, tag_for_fold):
-    fs = _fold_seeds(profile)
+def _evaluate_all(profile, cfg, makers, tag_for_fold, fold_seeds=None):
+    fs = fold_seeds or _fold_seeds(profile)
     return {name: evaluate_folds(cfg, mk, fs, tag_for_fold) for name, mk in makers.items()}
 
 
@@ -219,6 +278,18 @@ def ex_campaign_trainable(profile, p, udir, out_dir):
 def ex_campaign_frozen(profile, p, udir, out_dir):
     env, c, m = p["env"], p["c"], p["method"]
     return _frozen_campaign(profile, m, C.cell_cfg(profile, env, c), C.campaign_tag(profile, env, c, m))
+
+
+def ex_campaign_prereg_budget(profile, p, udir, out_dir):
+    env, c, m = p["env"], p["c"], p["method"]
+    cls, space = FROZEN_CAMPAIGNS[PREREG_BUDGET_METHODS[m]]
+    tag = C.campaign_tag(profile, env, c, m)
+    budgets = tuple(sorted(set(profile.prereg_sub_budgets) | set(profile.sub_budgets)))
+    res = nested_cv_hpo_record(cls, space, C.cell_cfg(profile, env, c), list(profile.seeds), K_out=profile.K_out,
+                               K_in=profile.prereg_K_in, n_trials=profile.prereg_n_trials, sub_budgets=budgets,
+                               seed0=0, tag=tag, checkpoint_path=os.path.join(udir, "checkpoint.json"))
+    return {"tag": tag, "method": m, "K_in": profile.prereg_K_in, "n_trials": profile.prereg_n_trials,
+            "results": res}
 
 
 def ex_campaign_sens(profile, p, udir, out_dir):
@@ -281,11 +352,13 @@ def ex_sweep(profile, p, udir, out_dir):
     return {"rows": rows, "reproduction": repro, "grid": SWEEP_GRID}
 
 
-def ex_eval_cew(profile, p, udir, out_dir):
-    env, c = p["env"], p["c"]
-    makers, missing = method_makers(profile, out_dir, env, c, CLEAN_METHODS)
-    recs = _evaluate_all(profile, C.cell_cfg(profile, env, c), makers, lambda k: C.cew_tag(profile, env, c, k))
-    return {"records": recs, "missing": missing}
+def _eval_cew_tier(tier):
+    def ex(profile, p, udir, out_dir):
+        env, c = p["env"], p["c"]
+        makers, missing = method_makers(profile, out_dir, env, c, CEW_TIER_METHODS[tier])
+        recs = _evaluate_all(profile, C.cell_cfg(profile, env, c), makers, lambda k: C.cew_tag(profile, env, c, k))
+        return {"tier": tier, "records": recs, "missing": missing}
+    return ex
 
 
 def ex_eval_adv(profile, p, udir, out_dir):
@@ -329,6 +402,18 @@ def ex_eval_sens_cew(profile, p, udir, out_dir):
     return {"records": recs, "missing": missing}
 
 
+def ex_eval_shift_cew(profile, p, udir, out_dir):
+    """Distribution shift on matched worlds: every method's fold-k configuration,
+    tuned on the training environment at the shift cost ratio, is evaluated on all
+    seeds of the shifted environment with one method-independent tag per fold."""
+    c = profile.shift_c
+    makers, missing = method_makers(profile, out_dir, C.SHIFT_TRAIN_ENV, c, ROBUSTNESS_METHODS)
+    cfg = C.cell_cfg(profile, C.SHIFT_EVAL_ENV, c)
+    fs = [(k, list(profile.seeds)) for k in range(profile.K_out)]
+    recs = _evaluate_all(profile, cfg, makers, lambda k: C.shift_cew_tag(profile, k), fold_seeds=fs)
+    return {"train_env": C.SHIFT_TRAIN_ENV, "eval_env": C.SHIFT_EVAL_ENV, "c": c, "records": recs, "missing": missing}
+
+
 def ex_dp_reduced(profile, p, udir, out_dir):
     env, n, c = p["env"], p["n"], p["c"]
     cfg = C.cell_cfg(profile, env, c, n_agents=n)
@@ -349,9 +434,7 @@ def ex_dp_cew(profile, p, udir, out_dir):
 
 def ex_overhead(profile, p, udir, out_dir):
     env, c = C.ENV_NAMES[0], profile.grid[-1]
-    makers, missing = method_makers(profile, out_dir, env, c,
-                                    ["static", "ewma", "rova", "A0", "A5", "learned", "qlearn", "static_ext",
-                                     "ewma_ext", "clairvoyant", "rova_single"])
+    makers, missing = method_makers(profile, out_dir, env, c, ROBUSTNESS_METHODS)
     policies = {name: mk(0) for name, mk in makers.items()}
     policies["rova_default"] = lambda: DTCOATunable()
     res = benchmark(policies, list(profile.overhead_n), profile.overhead_reps,
@@ -368,10 +451,11 @@ def ex_analysis(profile, p, udir, out_dir):
 
 EXECUTORS = {
     "gate": ex_gate, "anchor_eval": ex_anchor_eval, "campaign_trainable": ex_campaign_trainable,
-    "campaign_frozen": ex_campaign_frozen, "campaign_sens": ex_campaign_sens,
-    "campaign_advt": ex_campaign_advt, "campaign_tpe": ex_campaign_tpe, "sweep": ex_sweep,
-    "eval_cew": ex_eval_cew, "eval_adv": ex_eval_adv, "eval_advt_cew": ex_eval_advt_cew,
-    "eval_sens_cew": ex_eval_sens_cew, "dp_reduced": ex_dp_reduced, "dp_cew": ex_dp_cew,
-    "overhead": ex_overhead, "analysis": ex_analysis,
+    "campaign_frozen": ex_campaign_frozen, "campaign_prereg_budget": ex_campaign_prereg_budget,
+    "campaign_sens": ex_campaign_sens, "campaign_advt": ex_campaign_advt, "campaign_tpe": ex_campaign_tpe,
+    "sweep": ex_sweep, "eval_cew": _eval_cew_tier("A"), "eval_cew_b": _eval_cew_tier("B"),
+    "eval_cew_c": _eval_cew_tier("C"), "eval_adv": ex_eval_adv, "eval_advt_cew": ex_eval_advt_cew,
+    "eval_sens_cew": ex_eval_sens_cew, "eval_shift_cew": ex_eval_shift_cew, "dp_reduced": ex_dp_reduced,
+    "dp_cew": ex_dp_cew, "overhead": ex_overhead, "analysis": ex_analysis,
 }
-RESUMABLE_KINDS = {"campaign_trainable", "campaign_tpe"}
+RESUMABLE_KINDS = {"campaign_trainable", "campaign_tpe", "campaign_prereg_budget"}

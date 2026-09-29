@@ -5,8 +5,10 @@ Tags seed the simulated worlds (``run_trial`` seeds each world with
 and nowhere else.
 """
 from dataclasses import dataclass, field
+from itertools import combinations
 
 from dtcoa_val.experiments.environments import ENVIRONMENTS, COST_RATIO_GRID, cfg_for
+from dtcoa_val.experiments.run_pipeline import SHIFT_COST_RATIO, SHIFT_EVAL_ENV, SHIFT_TRAIN_ENV
 
 ENV_NAMES = list(ENVIRONMENTS)
 GRID = list(COST_RATIO_GRID)
@@ -27,14 +29,59 @@ PERTURBATIONS = {
     "K3_conflict": dict(conflict_frac=1.0 / 6.0),
 }
 
-# Sequential-oracle instance sizes (R7). Collapse N=6 is its full evaluated size.
+# Sequential-oracle instance sizes (R7). Collapse at N=6 is its full evaluated
+# size and is solved on the common evaluation worlds (``dp_cew``) instead.
 DP_REDUCED_SIZES = {
     "favorable_hmm_coupled": [2, 3, 4, 5, 6],
-    "collapse_moderate_coupled": [2, 3, 4, 5, 6],
+    "collapse_moderate_coupled": [2, 3, 4, 5],
 }
 DP_FULL_SIZE_ENV = "collapse_moderate_coupled"
 
 OVERHEAD_N = [1, 6, 10, 100, 1000]
+
+# --------------------------------------------------------------------------- #
+# Factorial ablation (protocol section 7; plan R15). A component is switched off
+# through DTCOATunable's structural flag, and its now-inert parameters leave the
+# search space, exactly as in the frozen one-at-a-time ablations. Decay acts only
+# inside the memory branch (dtcoa_tunable.py: `if self.use_trust:` ... `if
+# self.use_decay`), so with memory off the decay setting is inert: the 16 cells of
+# the 2^4 design contain 12 distinct architectures (checked by a unit test).
+# --------------------------------------------------------------------------- #
+COMPONENT_SWITCH = {"memory": "use_trust", "decay": "use_decay",
+                    "propagation": "use_propagation", "stability": "use_stability"}
+COMPONENT_PARAMS = {"memory": ("alpha", "gamma", "k"), "decay": ("gamma", "k"),
+                    "propagation": ("prop_scale",), "stability": ("stab_scale", "s_min")}
+COMPONENTS = tuple(COMPONENT_SWITCH)
+ARCHIVED_ABLATION_VARIANTS = {  # ABLATION-001 variant -> canonical set of components off
+    "full": frozenset(),
+    "no_memory": frozenset({"memory", "decay"}),
+    "no_decay": frozenset({"decay"}),
+    "no_propagation": frozenset({"propagation"}),
+    "no_stability": frozenset({"stability"}),
+}
+
+
+def canonical_off(off):
+    off = set(off)
+    if "memory" in off:
+        off.add("decay")
+    return frozenset(off)
+
+
+def architecture_name(off):
+    """Method name of the architecture with components ``off`` switched off."""
+    off = canonical_off(off)
+    for name, s in ARCHIVED_ABLATION_VARIANTS.items():
+        if s == off:
+            return f"abl_{name}"
+    return "fx_" + "-".join(c for c in COMPONENTS if c in off)
+
+
+FACTORIAL_CELLS = [frozenset(s) for k in range(len(COMPONENTS) + 1) for s in combinations(COMPONENTS, k)]
+ARCHITECTURES = sorted({canonical_off(s) for s in FACTORIAL_CELLS}, key=lambda s: (len(s), sorted(s)))
+ABLATION_ARCHIVED_METHODS = [f"abl_{n}" for n in ARCHIVED_ABLATION_VARIANTS]
+FACTORIAL_NEW_METHODS = [architecture_name(s) for s in ARCHITECTURES
+                         if architecture_name(s) not in ABLATION_ARCHIVED_METHODS]
 
 
 @dataclass(frozen=True)
@@ -57,6 +104,12 @@ class Profile:
     overhead_n: tuple = tuple(OVERHEAD_N)
     overhead_reps: int = 7
     n_boot: int = 5000
+    n_post: int = 4000
+    prereg_K_in: int = 5
+    prereg_n_trials: int = 200
+    prereg_sub_budgets: tuple = (25, 50, 100, 200)
+    shift_c: float = SHIFT_COST_RATIO
+    workers_reference: int = 15
 
 
 FULL = Profile(
@@ -71,7 +124,8 @@ SMOKE = Profile(
     grid=(0.5, 20.0),
     cfg_overrides=dict(horizon=20, n_agents=3, graph_density=0.5, coupling=0.2),
     dp_sizes={"favorable_hmm_coupled": [2], "collapse_moderate_coupled": [2]},
-    overhead_n=(1, 10), overhead_reps=2, n_boot=200,
+    overhead_n=(1, 10), overhead_reps=2, n_boot=200, n_post=200,
+    prereg_K_in=3, prereg_n_trials=6, prereg_sub_budgets=(2, 4, 6), shift_c=0.5,
 )
 
 PILOT = Profile(
@@ -96,6 +150,8 @@ def adversary_valid(profile_name, env, profile):
 
 # --------------------------------------------------------------------------- #
 # Tag registry (plan section 3). Archived tags are reproduced byte-for-byte.
+# Every tag used for a between-method comparison is method-independent, so a
+# seed generates the identical world for every compared method (plan section 3).
 # --------------------------------------------------------------------------- #
 def archived_tag(env, c, method):
     return f"{env}__c{c}__{method}"
@@ -131,6 +187,11 @@ def sens_campaign_tag(profile, pert, env, c, method):
 
 def sens_cew_tag(profile, pert, env, c, k):
     return f"{profile.tag_prefix}_SENS_CEW__{pert}__{env}__c{c}_out{k}_test"
+
+
+def shift_cew_tag(profile, k):
+    return (f"{profile.tag_prefix}_SHIFT_CEW__{SHIFT_TRAIN_ENV}_to_{SHIFT_EVAL_ENV}"
+            f"__c{profile.shift_c}_fold{k}")
 
 
 def dp_tag(profile, env, n, c):

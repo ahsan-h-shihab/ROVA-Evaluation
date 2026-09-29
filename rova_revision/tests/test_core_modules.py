@@ -18,7 +18,7 @@ from dtcoa_val.oracles.oracles import AuthorizationOracle
 from dtcoa_val.utils import make_rng
 
 from rova_revision.config import SMOKE
-from rova_revision.coupled_dp import CoupledDP, solve_full_action_set, world
+from rova_revision.coupled_dp import CoupledDP, FullGridDP, solve_naive_all_levels, world
 from rova_revision.instrument import RecordingOracle, evaluate_trial
 from rova_revision.policies import (CappedEWMA, CappedStaticThreshold, ConstantLevel,
                                     LearnedCSPolicy, ObsFeatures, QLearnPolicy, RandomLevels,
@@ -190,20 +190,83 @@ def test_tpe_startup_candidates_and_validity():
 def test_dp_uncoupled_equals_myopic():
     cfg = small_cfg(horizon=15, n_agents=3, coupling=0.0, graph_density=0.0)
     for s in TEST_SEEDS[:3]:
-        dp = CoupledDP(world(cfg, s, "unit_dp"), cfg["H"], cfg["U"])
+        dp = FullGridDP(world(cfg, s, "unit_dp"), cfg["H"], cfg["U"])
         v_opt, v_my = dp.solve()
         assert abs(v_opt - v_my) < 1e-9
 
 
-def test_dp_vertex_restriction_is_exact():
-    for c in (0.5, 3.5, 20.0):
-        cfg = small_cfg(c=c, horizon=8, n_agents=2, coupling=0.4, graph_density=1.0)
+def test_dp_exhaustive_solver_matches_naive_enumeration():
+    """The agent-by-agent contraction over all 6^N joint levels equals explicit
+    enumeration of every joint action (N = 1, 2, 3; both coupled environments)."""
+    for env in ("favorable_hmm_coupled", "collapse_moderate_coupled"):
+        for n in (1, 2, 3):
+            for c in (0.5, 3.5, 20.0):
+                cfg = small_cfg(env, c=c, horizon=8, n_agents=n, coupling=0.4, graph_density=1.0)
+                for s in TEST_SEEDS[:2]:
+                    sim = world(cfg, s, "unit_dp")
+                    v_full, v_my = FullGridDP(sim, cfg["H"], cfg["U"]).solve()
+                    v_naive = solve_naive_all_levels(sim, cfg["H"], cfg["U"])
+                    assert abs(v_full - v_naive) < 1e-9 * max(1.0, abs(v_naive)), (env, n, c, s, v_full, v_naive)
+                    assert v_full <= v_my + 1e-12
+
+
+def test_dp_q_table_matches_explicit_evaluation():
+    """Every entry of the contracted Q table equals the explicit expected loss of the
+    decoded joint levels (checks the contraction order and the index decoding)."""
+    rng = np.random.default_rng(5100)
+    for n in (1, 2, 3):
+        cfg = small_cfg("collapse_moderate_coupled", c=3.5, horizon=6, n_agents=n, coupling=0.4, graph_density=1.0)
+        dp = FullGridDP(world(cfg, 5001, "unit_dp"), cfg["H"], cfg["U"])
+        _h, _r, q, cost = dp._level_arrays(2)
+        W = rng.random((dp.S, dp.F))
+        Q = dp._q_table(q, cost, W)
+        for _ in range(40):
+            s, j = int(rng.integers(dp.S)), int(rng.integers(6 ** n))
+            lv = dp._decode(np.array(j))
+            qs = q[s, np.arange(n), lv]
+            probs = np.prod(np.where(dp.fbits == 1, qs, 1.0 - qs), axis=1)
+            expected = cost[s, np.arange(n), lv].sum() + probs @ W[s]
+            assert abs(Q[s, j] - expected) < 1e-12, (n, s, j)
+
+
+def test_dp_occupancy_uncoupled_is_myopic():
+    cfg = small_cfg(horizon=12, n_agents=3, coupling=0.0, graph_density=0.0)
+    dp = FullGridDP(world(cfg, 5002, "unit_dp"), cfg["H"], cfg["U"])
+    dp.solve()
+    dis, mid = dp.occupancy_stats()
+    assert dis == 0.0 and mid == 0.0, (dis, mid)
+
+
+def test_dp_vertex_check_on_frozen_model():
+    """Under the frozen simulator's structure, the {0,5}^N solution equals the
+    exhaustive optimum on these instances (an empirical check, reported per world)."""
+    for env in ("favorable_hmm_coupled", "collapse_moderate_coupled"):
+        for n in (2, 3, 4):
+            cfg = small_cfg(env, c=3.5, horizon=10, n_agents=n, coupling=0.4, graph_density=1.0)
+            for s in TEST_SEEDS[:2]:
+                sim = world(cfg, s, "unit_dp")
+                v_full, _ = FullGridDP(sim, cfg["H"], cfg["U"]).solve()
+                v_vertex = CoupledDP(sim, cfg["H"], cfg["U"]).solve()
+                assert abs(v_vertex - v_full) < 1e-9 * max(1.0, abs(v_full)), (env, n, s, v_vertex, v_full)
+
+
+def test_dp_vertex_check_detects_non_vertex_optimum():
+    """Falsification: with a convex harm weight and failure factor (pi^2), interior
+    levels become optimal; the exhaustive solver finds them, the vertex solution
+    is strictly worse, and naive enumeration agrees with the exhaustive solver."""
+    sq = lambda p: np.asarray(p) ** 2
+    gaps = []
+    for c in (1.5, 3.5):
+        cfg = small_cfg("collapse_moderate_coupled", c=c, horizon=8, n_agents=2, coupling=0.4, graph_density=1.0)
         for s in TEST_SEEDS[:3]:
             sim = world(cfg, s, "unit_dp")
-            dp = CoupledDP(sim, cfg["H"], cfg["U"])
-            v_opt, v_my = dp.solve()
-            assert abs(v_opt - solve_full_action_set(sim, cfg["H"], cfg["U"])) < 1e-9
-            assert v_opt <= v_my + 1e-12
+            dp = FullGridDP(sim, cfg["H"], cfg["U"], fail_frac=sq, harm_frac=sq)
+            v_full, _ = dp.solve()
+            v_naive = solve_naive_all_levels(sim, cfg["H"], cfg["U"], fail_frac=sq, harm_frac=sq)
+            v_vertex = CoupledDP(sim, cfg["H"], cfg["U"], fail_frac=sq, harm_frac=sq).solve()
+            assert abs(v_full - v_naive) < 1e-9 * max(1.0, abs(v_naive))
+            gaps.append(v_vertex - v_full)
+    assert min(gaps) >= -1e-12 and max(gaps) > 1e-3, gaps
 
 
 class _MyopicOracle:
@@ -226,7 +289,7 @@ def test_dp_transition_model_matches_frozen_simulator():
     cfg = small_cfg(c=8.0, horizon=20, n_agents=3, coupling=0.4, graph_density=0.8)
     diffs = []
     for s in range(5000, 5300):
-        dp = CoupledDP(world(cfg, s, "unit_mc"), cfg["H"], cfg["U"])
+        dp = FullGridDP(world(cfg, s, "unit_mc"), cfg["H"], cfg["U"])
         _, v_my = dp.solve()
         rec = evaluate_trial(cfg, _MyopicOracle(cfg["H"], cfg["U"]), s, "unit_mc")
         diffs.append(rec["sum_loss"] - v_my)
