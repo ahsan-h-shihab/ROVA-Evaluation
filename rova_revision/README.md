@@ -98,3 +98,36 @@ revision_out/
 ```
 
 Unit identifiers are `S<stage>__<kind>__<parameters in sorted-key order>`.
+
+## REV-002: A1 tuning convergence and A2 fold-clustered re-analysis
+
+Executes [`docs/REVISION_002_ANALYSIS_PLAN.md`](../docs/REVISION_002_ANALYSIS_PLAN.md) (written
+after the REV-001 results, before execution), from the git tag `revision-002-frozen`. Both
+analyses read REV-001 outputs and never modify them; their outputs go to new directories.
+
+| Module | Role |
+|---|---|
+| `rev002_constants.py` | constants fixed by the plan (convergence criterion, REV-001 input fingerprints, A2 resampling) |
+| `a1_config.py` | A1 profiles (`full`: 320 candidates, selections at 80/160/320; `smoke`: plumbing) |
+| `tpe_ext.py` | the REV-001 TPE run continued to more candidates; the startup draw stays at the archived budget |
+| `a1_guard.py` | the REV-001 environment gate bound to `revision-002-frozen` |
+| `a1_units.py` | A1 units: gate (R0 exact replay, REV-001 input verification), 45 tuning campaigns (RC1, RC2, RC4, RC5), 15 common-world evaluations (RC3), analysis |
+| `a1_analysis.py` | convergence classification, verdicts by budget, families H1–H5, A1-family Holm, G, DR1/DR2/DR8, curves, A2 statistics on A1 |
+| `run_a1.py`, `run_a1.sh` | A1 orchestrator and driver (`check`, `full`, `verify`) |
+| `verify_a1.py` | verification of a finished A1 output |
+| `clustered.py` | A2: deterministic fold-clustered re-analysis of stored per-world regrets; imports no simulator code |
+| `tests/test_rev002.py` | A1/A2 tests |
+
+A1 (lab workstation only; REV-001 `revision_out/` present and unmodified):
+
+```bash
+bash rova_revision/run_a1.sh check  /path/to/runs /path/to/revision_out   # tests, A1 environment gate, REV-001 inputs
+bash rova_revision/run_a1.sh full   /path/to/runs /path/to/revision_out   # -> /path/to/runs/a1_out (+ .tar.gz)
+bash rova_revision/run_a1.sh verify /path/to/runs
+```
+
+A2 (any machine; nothing is simulated):
+
+```bash
+PYTHONPATH=. python -m rova_revision.clustered --rev001-archive revision_out.tar.gz --work WORK_DIR --out OUT_DIR
+```
