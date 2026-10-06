@@ -1,4 +1,4 @@
-# `rova_revision/` — code for the REV-001 revision analyses
+# `rova_revision/` — code for the revision analyses (REV-001, REV-002)
 
 This package executes [`docs/REVISION_ANALYSIS_PLAN.md`](../docs/REVISION_ANALYSIS_PLAN.md).
 It is additive: it imports the frozen implementation `dtcoa_val/` and never modifies it.
@@ -75,6 +75,8 @@ PYTHONPATH=. python -m rova_revision.tests.test_env_gate
 PYTHONPATH=. python -m rova_revision.tests.test_decision_rules
 PYTHONPATH=. python -m rova_revision.tests.test_orchestration_analysis
 PYTHONPATH=. python -m rova_revision.tests.test_scientific_paths
+PYTHONPATH=. python -m rova_revision.tests.test_rev002
+PYTHONPATH=. python -m rova_revision.tests.test_behaviour_a0
 ```
 
 The analysis can be recomputed from a finished output directory without running any
@@ -117,6 +119,9 @@ analyses read REV-001 outputs and never modify them; their outputs go to new dir
 | `verify_a1.py` | verification of a finished A1 output |
 | `clustered.py` | A2: deterministic fold-clustered re-analysis of stored per-world regrets; imports no simulator code |
 | `tests/test_rev002.py` | A1/A2 tests |
+| `behaviour_a0.py` | P1: exploratory behavioural comparison with always-full-supervision ([`docs/REVISION_002_POSTRUN_ANALYSES.md`](../docs/REVISION_002_POSTRUN_ANALYSES.md)); reads stored outputs only |
+| `tests/test_behaviour_a0.py` | P1 tests |
+| `paper_figures.py` | the paper's figures drawn from stored REV-001 and A1 tables (presentation only; no simulation, no new statistics) |
 
 A1 (lab workstation only; REV-001 `revision_out/` present and unmodified):
 
@@ -131,3 +136,13 @@ A2 (any machine; nothing is simulated):
 ```bash
 PYTHONPATH=. python -m rova_revision.clustered --rev001-archive revision_out.tar.gz --work WORK_DIR --out OUT_DIR
 ```
+
+P1 and the figures (any machine; nothing is simulated):
+
+```bash
+PYTHONPATH=. python -m rova_revision.behaviour_a0 --rev001-dir REV001/revision_out --a1-dir A1/a1_out --out OUT_DIR
+PYTHONPATH=. python -m rova_revision.paper_figures --rev001-dir REV001/revision_out --a1-dir A1/a1_out --out FIG_DIR
+```
+
+The outputs of REV-001, A1, A2 and P1, with their digests and verification commands, are in
+[`experiments/REVISION_OUTPUTS.md`](../experiments/REVISION_OUTPUTS.md).

@@ -1,5 +1,11 @@
 # Experiment Index
 
+The MAIN-001, PILOT-001 and ABLATION-001 entries were written when those
+experiments completed and are kept as written. Where the revision analyses
+(REV-001, REV-002, below) reach a different conclusion, those entries are
+superseded; see `docs/PREREGISTRATION_DEVIATIONS.md` and
+`experiments/REVISION_OUTPUTS.md`.
+
 ## MAIN-001
 - **Objective:** Frozen rev. 5 core comparison — 45 nested-CV-HPO units
   (3 methods × 3 environments × 5 cost ratios) supporting the primary claim
@@ -77,3 +83,52 @@
   regenerate from `raw/` + `../../code/` at commit `4533c61` via `reproduce.sh`
   (validator → DR3 descriptive → DR3 regime). Determinism: same-tag reruns
   reproduce checkpoints bit-for-bit.
+
+## REV-001
+- **Objective:** Revision analyses specified in `docs/REVISION_ANALYSIS_PLAN.md`:
+  the protocol commitments restored according to
+  `docs/PREREGISTRATION_DEVIATIONS.md`, and the matched-world correction of the
+  published paired analyses.
+- **Date:** 2026-09-30 to 2026-10-01
+- **Status:** Complete
+- **Output:** `experiments/REV-001_revision_analyses/revision_out.tar.gz`
+  (SHA-256 `63dae057d63c4917d90391fd9da72279f5e909ffb1a1b7e192999f55d28a6b10`)
+- **Plan and code:** tags `revision-001-analysis-plan` (`8dbb054`) and
+  `revision-001-frozen` (`053a1fa`)
+- **Seeds:** 0..59 (the frozen study seeds)
+- **Summary:** `analysis/REPORT.md` inside the archive.
+- **Verification:** `rova_revision.verify_outputs` (see
+  `experiments/REVISION_OUTPUTS.md`).
+
+## REV-002 A1 (tuning convergence)
+- **Objective:** TPE tuning continued to 320 candidates, with selections at 80,
+  160 and 320 (`docs/REVISION_002_ANALYSIS_PLAN.md`).
+- **Date:** 2026-10-01
+- **Status:** Complete
+- **Output:** `experiments/REV-002_A1_tuning_convergence/a1_out.tar.gz`
+  (SHA-256 `35459e1e096135531849a3a96d3f7501392c8d4f10474f00bc83913baa908e03`)
+- **Plan and code:** tags `revision-002-analysis-plan` (`58affad`) and
+  `revision-002-frozen` (`226186c`)
+- **Summary:** `analysis/REPORT.md` inside the archive.
+- **Verification:** `rova_revision.verify_a1`.
+
+## REV-002 A2 (fold-clustered re-analysis)
+- **Objective:** Re-analysis of the stored REV-001 per-world regrets with the
+  outer fold as the cluster (plan, section 3). No simulation.
+- **Date:** 2026-10-01
+- **Status:** Complete
+- **Output:** `experiments/REV-002_A2_cluster_reanalysis/` (`SHA256SUMS`)
+- **Code:** tag `revision-002-frozen` (`226186c`)
+- **Summary:** `A2_REPORT.md`.
+- **Reproducibility:** a second run reproduced every file byte for byte.
+
+## REV-002 P1 (exploratory)
+- **Objective:** Behavioural comparison of the tuned policies with
+  always-full-supervision, specified after the A1 and A2 results
+  (`docs/REVISION_002_POSTRUN_ANALYSES.md`). No simulation.
+- **Date:** 2026-10-02
+- **Status:** Complete
+- **Output:** `experiments/REV-002_P1_behaviour_a0/` (`SHA256SUMS`)
+- **Code:** commit `f094e20`
+- **Summary:** `BEHAVIOUR_A0_REPORT.md`.
+- **Reproducibility:** a second run reproduced every file byte for byte.

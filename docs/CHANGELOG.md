@@ -239,3 +239,62 @@
   tarball + `.sha256`); registered in `EXPERIMENT_INDEX.md`; reproducibility
   verified (raw immutable pre/post; derived regenerable from `raw/` at
   `4533c61`; tarball + fresh extraction verify 132/132).
+
+## 2026-09-29 (revision: protocol, deviation record, REV-001 plan and code)
+
+- Published the original internal evaluation protocol verbatim
+  (`docs/PRE_REGISTERED_PROTOCOL.md`; never registered externally) and the
+  deviation record (`docs/PREREGISTRATION_DEVIATIONS.md`): each commitment,
+  what MAIN-001 and ABLATION-001 executed, and what the revision restores.
+- Dated REV-001 analysis plan (`docs/REVISION_ANALYSIS_PLAN.md`), tagged
+  `revision-001-analysis-plan` (`8dbb054`) before any revision analysis was
+  executed; pre-execution amendments are logged in its section 10.
+- Revision code (`rova_revision/`), frozen at tag `revision-001-frozen`
+  (`053a1fa`).
+- **Correction:** each method's evaluation worlds were seeded from a
+  method-specific tag, so the published paired comparisons did not pair worlds
+  (deviation record, section 3). The revision re-runs the published analysis
+  code on matched worlds; archived files are not modified.
+
+## 2026-09-30 to 2026-10-01 (REV-001 execution)
+
+- Executed on the lab workstation from `revision-001-frozen` with 15 workers,
+  2026-09-30 19:57 to 2026-10-01 08:54 (UTC+05:00). Environment gate and
+  reproduction gate R0 passed; 0 failed units. Output archive SHA-256
+  `63dae057…` (`experiments/REV-001_revision_analyses/`).
+
+## 2026-10-01 (REV-002: plan, A1, A2)
+
+- Dated REV-002 analysis plan (`docs/REVISION_002_ANALYSIS_PLAN.md`), tagged
+  `revision-002-analysis-plan` (`58affad`) before A1 or A2 was executed; code
+  tagged `revision-002-frozen` (`226186c`).
+- A2: fold-clustered re-analysis of the stored REV-001 per-world regrets, no
+  simulation; a second run reproduced every file byte for byte
+  (`experiments/REV-002_A2_cluster_reanalysis/`).
+- A1: tuning convergence, executed on the lab workstation from
+  `revision-002-frozen`, 2026-10-01 16:39 to 19:24 (UTC+05:00); 0 failed
+  units. Output archive SHA-256 `35459e1e…`
+  (`experiments/REV-002_A1_tuning_convergence/`).
+
+## 2026-10-02 (exploratory post-run analysis P1)
+
+- P1, a behavioural comparison with always-full-supervision, specified after
+  the A1 and A2 results (`docs/REVISION_002_POSTRUN_ANALYSES.md`) and reported
+  as exploratory. Reads stored outputs only; commit `f094e20`
+  (`experiments/REV-002_P1_behaviour_a0/`).
+
+## 2026-10-02 to 2026-10-03 (figures)
+
+- `rova_revision/paper_figures.py`: the paper's figures drawn from stored
+  REV-001 and A1 tables (presentation only).
+
+## 2026-10-06 (v2.0 release preparation)
+
+- Revision outputs added under `experiments/`, indexed with digests and
+  verification commands in `experiments/REVISION_OUTPUTS.md`.
+- `.gitattributes`: files are checked out byte for byte, so the checksum
+  manifests also verify on Windows checkouts with `core.autocrlf` enabled
+  (previously all 88 MAIN-001 and 132 ABLATION-001 entries failed there).
+- Documents written for v1.0, including the entries above this revision
+  section, are kept as written; where the revision analyses reach a different
+  conclusion, they are superseded.
