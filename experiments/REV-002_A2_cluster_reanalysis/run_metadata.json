@@ -1,0 +1,131 @@
+{
+ "analysis": "A2 (docs/REVISION_002_ANALYSIS_PLAN.md section 3)",
+ "environment": {
+  "cpu": "AMD Ryzen 5 4500U with Radeon Graphics",
+  "git_frozen_tag_commit": "226186c29c9a4a151f14ea12b4fd8e6a4bdd4032",
+  "git_head": "226186c29c9a4a151f14ea12b4fd8e6a4bdd4032",
+  "git_status_porcelain": "",
+  "logical_cpus": 6,
+  "numpy": "2.4.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.1",
+  "scipy": "1.17.1",
+  "simulation": "none (stored per-world regrets only)",
+  "system": "Windows"
+ },
+ "frozen_checkout": true,
+ "label": "L4: post-run statistical re-analysis",
+ "n_boot": 5000,
+ "pairs": [
+  [
+   "F1",
+   "rova",
+   "static"
+  ],
+  [
+   "F1",
+   "rova",
+   "ewma"
+  ],
+  [
+   "F2",
+   "rova",
+   "A0"
+  ],
+  [
+   "F2",
+   "static",
+   "A0"
+  ],
+  [
+   "F2",
+   "ewma",
+   "A0"
+  ],
+  [
+   "F3",
+   "rova",
+   "learned"
+  ],
+  [
+   "F3",
+   "rova",
+   "qlearn"
+  ],
+  [
+   "F4",
+   "rova",
+   "static_ext"
+  ],
+  [
+   "F4",
+   "rova",
+   "ewma_ext"
+  ],
+  [
+   "F5",
+   "rova",
+   "rova_single"
+  ],
+  [
+   "F5",
+   "rova",
+   "clairvoyant"
+  ],
+  [
+   "F6",
+   "rova_tpe",
+   "static_tpe"
+  ],
+  [
+   "F6",
+   "rova_tpe",
+   "ewma_tpe"
+  ],
+  [
+   "F7",
+   "rova_tpe",
+   "rova"
+  ],
+  [
+   "F7",
+   "static_tpe",
+   "static"
+  ],
+  [
+   "F7",
+   "ewma_tpe",
+   "ewma"
+  ],
+  [
+   "F8",
+   "abl_no_memory",
+   "abl_full"
+  ],
+  [
+   "F8",
+   "abl_no_decay",
+   "abl_full"
+  ],
+  [
+   "F8",
+   "abl_no_propagation",
+   "abl_full"
+  ],
+  [
+   "F8",
+   "abl_no_stability",
+   "abl_full"
+  ]
+ ],
+ "rev001_archive_sha256": "63dae057d63c4917d90391fd9da72279f5e909ffb1a1b7e192999f55d28a6b10",
+ "rev001_inputs": {
+  "entries": 1883,
+  "expected": "12a72b84d635aee108950808fd8d0f7d901c56be0289b63ddf05c0f325577cc4",
+  "expected_entries": 1883,
+  "failed_entries": [],
+  "passed": true,
+  "sha256sums_sha256": "12a72b84d635aee108950808fd8d0f7d901c56be0289b63ddf05c0f325577cc4"
+ },
+ "seed": 0
+}

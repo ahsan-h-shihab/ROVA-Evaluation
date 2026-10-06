@@ -1,0 +1,26 @@
+{
+ "a1_inputs": {
+  "entries": 182,
+  "passed": true,
+  "sha256sums_sha256": "36a54f1644c23c429429d4c8e479cf4f8b72b848839c1f4a46a02a8ee15d1899"
+ },
+ "analysis": "behaviour_a0 (docs/REVISION_002_POSTRUN_ANALYSES.md)",
+ "environment": {
+  "cpu": "AMD Ryzen 5 4500U with Radeon Graphics",
+  "git_head": "f094e20cbd1f6ce5a392e044a3bc15aa3ed56a21",
+  "git_status_porcelain": "",
+  "logical_cpus": 6,
+  "numpy": "2.4.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.1",
+  "scipy": "1.17.1",
+  "simulation": "none (stored per-world regrets only)",
+  "system": "Windows"
+ },
+ "label": "exploratory post-run read-only re-analysis; no simulation",
+ "rev001_inputs": {
+  "entries": 1883,
+  "passed": true,
+  "sha256sums_sha256": "12a72b84d635aee108950808fd8d0f7d901c56be0289b63ddf05c0f325577cc4"
+ }
+}
