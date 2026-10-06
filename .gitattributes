@@ -1,2 +1,7 @@
+# Check out every file exactly as committed (no end-of-line conversion), so that the
+# SHA-256 manifests and recorded digests verify on every platform, including Windows
+# checkouts with core.autocrlf enabled.
+* -text
+
 # Published verbatim; its SHA-256 is recorded in docs/PREREGISTRATION_DEVIATIONS.md.
 docs/PRE_REGISTERED_PROTOCOL.md -text
