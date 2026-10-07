@@ -57,19 +57,27 @@ verifier also requires the recorded reproduction checks (among them the exact re
 the REV-001 TPE run) to have passed and the convergence constants to equal the plan's.
 
 A2 and P1 read only the stored outputs above and verify the SHA-256 fingerprints of their
-inputs before use. They can be recomputed with
+inputs before use. Each is recomputed from its own commit, with the inputs kept outside the
+repository (continuing from the commands above):
 
 ```bash
-git checkout revision-002-frozen   # A2 runs only from a clean checkout of this tag
+REPO=$(pwd)
+cp experiments/REV-001_revision_analyses/revision_out.tar.gz "$OUT/"
+git checkout -q revision-002-frozen   # A2 runs only from a clean checkout of this tag
 PYTHONPATH=. python -m rova_revision.clustered \
-    --rev001-archive experiments/REV-001_revision_analyses/revision_out.tar.gz --work WORK_DIR --out A2_OUT
+    --rev001-archive "$OUT/revision_out.tar.gz" --work "$OUT/a2_work" --out "$OUT/A2"
+git checkout -q f094e20               # P1 was added here; the module is unchanged since
 PYTHONPATH=. python -m rova_revision.behaviour_a0 \
-    --rev001-dir "$OUT/revision_out" --a1-dir "$OUT/a1_out" --out P1_OUT
+    --rev001-dir "$OUT/revision_out" --a1-dir "$OUT/a1_out" --out "$OUT/P1"
+git checkout -q main
+
+# compare with the published files (run_metadata.json records the computer, so it is skipped)
+(cd "$OUT/A2" && grep -v run_metadata.json "$REPO/experiments/REV-002_A2_cluster_reanalysis/SHA256SUMS" | sha256sum -c)
+(cd "$OUT/P1" && grep -v run_metadata.json "$REPO/experiments/REV-002_P1_behaviour_a0/SHA256SUMS" | sha256sum -c)
 ```
 
 On the computer that produced them, a second run of each reproduced every file byte for
-byte. `run_metadata.json` records the software environment and therefore differs on another
-computer.
+byte, `run_metadata.json` included.
 
 ## Where to find what
 
