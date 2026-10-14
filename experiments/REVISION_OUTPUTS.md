@@ -7,7 +7,7 @@ Appendix D.1. The plans, the original internal protocol and the deviation record
 
 | Directory | Analysis | Plan | Code | Run |
 |---|---|---|---|---|
-| `REV-001_revision_analyses/` | REV-001 revision analyses | [`REVISION_ANALYSIS_PLAN.md`](../docs/REVISION_ANALYSIS_PLAN.md), tag `revision-001-analysis-plan` | tag `revision-001-frozen` (`053a1fa`) | lab workstation, 2026-09-30 19:57 to 2026-10-01 08:54 (UTC+05:00) |
+| `REV-001_revision_analyses/` | REV-001 revision analyses | [`REVISION_ANALYSIS_PLAN.md`](../docs/REVISION_ANALYSIS_PLAN.md), tag `revision-001-analysis-plan`; its dated amendments made before execution are included at `revision-001-frozen` | tag `revision-001-frozen` (`053a1fa`) | lab workstation, 2026-09-30 19:57 to 2026-10-01 08:54 (UTC+05:00) |
 | `REV-002_A1_tuning_convergence/` | A1 tuning convergence | [`REVISION_002_ANALYSIS_PLAN.md`](../docs/REVISION_002_ANALYSIS_PLAN.md), tag `revision-002-analysis-plan` | tag `revision-002-frozen` (`226186c`) | lab workstation, 2026-10-01 16:39 to 19:24 (UTC+05:00) |
 | `REV-002_A2_cluster_reanalysis/` | A2 fold-clustered re-analysis | the same plan, section 3 | tag `revision-002-frozen` (`226186c`) | separate computer, 2026-10-01; no simulation |
 | `REV-002_P1_behaviour_a0/` | P1 behavioural comparison with always-full-supervision (exploratory) | [`REVISION_002_POSTRUN_ANALYSES.md`](../docs/REVISION_002_POSTRUN_ANALYSES.md), written after the A1 and A2 results | commit `f094e20` | separate computer, 2026-10-02; no simulation |

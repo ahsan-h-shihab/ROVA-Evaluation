@@ -1,300 +1,183 @@
 # Changelog
 
-## 2026-07-04
+The wording of this changelog was condensed on 2026-10-15. The text as first published is in tag
+`v1.0` for the entries up to 2026-07-10 (`docs/CHANGELOG.md`, git blob `baf9b4ef1f73dce939528057b7609c38601476bf`)
+and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f123ec133855ec3cfb16d6`).
 
-- Implemented `dtcoa_tunable.py`: continuous penalty magnitudes replacing
-  frozen `dtcoa.py`'s integer/binary penalties. Validated against frozen
-  reference at matching defaults.
-- Implemented `search_space.py`: matched HPO search spaces for ROVA,
-  StaticThreshold, EWMA (clairvoyant space added then later removed, see
-  below).
-- Implemented `nested_hpo.py`: random-search HPO + K_out x K_in nested CV,
-  CVaR co-primary metric, checkpointed resumability. Verified resumability
-  bit-identical across interrupted/resumed runs.
-- Implemented `stats.py` additions: BCa bootstrap CI (replacing percentile
-  CI as the default in `describe()`), Friedman+Holm multi-method test.
-  Verified against synthetic skewed/separated data.
-- Implemented `dp_oracle.py`: single-agent sequential (DP-optimal) oracle.
-  FINDING: certified numerically identical to the myopic oracle across all
-  6 regime types (max discrepancy ~1e-15), via counterfactual-perturbation
-  verification, not assumption. This is a real scientific result, not
-  scaffolding.
-- Implemented `environments.py`: 3 frozen environments (favorable/
-  unfavorable/structural-contrast) + 7-point sparse cost-ratio grid.
-- Implemented `ablation_study.py`: one-at-a-time re-tuned ablations +
-  containment (DR4) report. **Later descoped from the pipeline** (see PI
-  review round 3) but retained as a module for future-work use.
-- Implemented `distribution_shift.py`: minimal train->shift evaluation,
-  reusing already-tuned configs.
-- Implemented `run_pipeline.py`: top-level pipeline over methods x
-  environments x cost-ratios, with manifest-based resumability and
-  deterministic sharding for parallel execution. Verified: full pilot run,
-  interrupted-and-resumed, and 2-shard parallel execution all produce
-  identical, non-duplicated, non-corrupted results.
-- **PI review round 2:** reclassified full ablation battery and
-  clairvoyant threshold from essential to revision-contingent; kept a
-  1-environment ablation spot-check in the minimum set.
-- **PI review round 3:** mechanism attribution (all ablations, including
-  the spot-check), full ablations, RL baseline, and clairvoyant analysis
-  moved to future work in full. Pipeline refactored accordingly:
-  - Removed `run_ablation_study` call from `run_pipeline.py`'s main loop;
-    ROVA now runs via plain `nested_cv_hpo`, same as every other method.
-  - Containment report is now computed as a free byproduct of ROVA's own
-    tuned configs (no separate ablation run needed for it).
-  - Removed `OracleLite`/clairvoyant from the methods dict and imports.
-  - **Bug fix:** `distribution_shift` previously only evaluated ROVA under
-    shift, making the delta non-comparative. Fixed to evaluate ROVA AND
-    EWMA (baseline) under the same shift, using their respective
-    already-tuned configs — no new HPO required.
-  - Regression-tested: pilot-scale run (reduced env, reduced budget)
-    confirms all of the above works end to end after the refactor, and both
-    `distribution_shift_report__rova.json` and
-    `distribution_shift_report__ewma.json` are produced correctly.
-- **PILOT-001 executed and archived:** budget-sensitivity assessment across
-  n_trials, K_out, K_in, seeds, cost-ratio grid density. All five tested
-  reductions rejected on evidence (see
-  `experiments/PILOT-001_budget_sensitivity/REPORT.md`). No budget
-  parameter changed as a result.
-- `EXPERIMENT_MANIFEST_FINAL.md` frozen: the minimum campaign for TMLR
-  submission, per PI review round 3 scoping.
+## 2026-07-04 — implementation and scope
 
-## 2026-07-04 (round 4)
+- `dtcoa_tunable.py`: continuous penalty magnitudes replacing the integer/binary penalties of the frozen
+  `dtcoa.py`; validated against the frozen reference at matching defaults.
+- `search_space.py`: matched HPO search spaces for ROVA, StaticThreshold and EWMA (a clairvoyant space was added and
+  later removed).
+- `nested_hpo.py`: random-search HPO with K_out × K_in nested cross-validation, CVaR co-primary metric and
+  checkpointed resumption; resumed runs are bit-identical to uninterrupted ones.
+- `stats.py`: BCa bootstrap intervals (now the default in `describe()`) and a Friedman + Holm multi-method test,
+  checked on synthetic skewed and separated data.
+- `dp_oracle.py`: single-agent sequential (DP-optimal) oracle. It is numerically identical to the myopic oracle in
+  all 6 regime types (maximum discrepancy ~1e-15), established by counterfactual perturbation rather than assumed.
+- `environments.py`: three frozen environments (favorable, unfavorable, structural contrast) and a 7-point sparse
+  cost-ratio grid (reduced to 5 points in round 5).
+- `ablation_study.py`: one-at-a-time re-tuned ablations and the containment (DR4) report; later removed from the
+  pipeline (round 3) and kept as a module.
+- `distribution_shift.py`: train→shift evaluation reusing tuned configurations.
+- `run_pipeline.py`: pipeline over methods × environments × cost ratios with manifest-based resumption and
+  deterministic sharding. A full pilot run, an interrupted-and-resumed run and a 2-shard run gave identical,
+  complete results.
+- Scope review, round 2: the full ablation battery and the clairvoyant threshold reclassified from essential to
+  revision-contingent; a 1-environment ablation spot-check kept.
+- Scope review, round 3: mechanism attribution (all ablations, including the spot-check), the RL baseline and the
+  clairvoyant analysis moved to future work. Pipeline changes: ROVA runs through plain `nested_cv_hpo` like every
+  other method; the containment report is computed from ROVA's own tuned configurations; `OracleLite`/clairvoyant
+  removed. Bug fix: `distribution_shift` evaluated only ROVA under shift; it now evaluates ROVA and EWMA under the
+  same shift with their own tuned configurations. A pilot-scale regression run produced both
+  `distribution_shift_report__rova.json` and `distribution_shift_report__ewma.json`.
+- PILOT-001 executed and archived: budget sensitivity over n_trials, K_out, K_in, seeds and grid density. All five
+  tested reductions were rejected on the evidence
+  ([`REPORT.md`](../experiments/PILOT-001_budget_sensitivity/REPORT.md)); no budget parameter changed.
+- `EXPERIMENT_MANIFEST_FINAL.md` frozen as the minimum campaign for the planned journal submission (round-3 scope).
 
-- Verified project understanding explicitly at user's request (no changes
-  from this step; confirmed evaluation-methodology framing, ROVA-as-object-
-  of-study, and flagged that "the manuscript" does not yet exist as text).
-- Produced `AE_MINIMUM_EVIDENCE_REVIEW.md`: reasoned from manuscript-claim
-  necessity alone (TMLR AE perspective), independent of the frozen protocol
-  and sunk implementation. Confirmed required set (E1/E2/E3/E5/E6/E7),
-  appendix-level item (E4, DP-oracle validation), future-work items
-  (E8 ablations, E9 RL baseline, E10 clairvoyant threshold — unchanged from
-  round 3), and one new finding: E11 (distribution-shift) does not support
-  any claim the current target sentence makes.
-- **`EXPERIMENT_MANIFEST_FINAL.md` revised to rev. 4:** distribution-shift
-  evaluation removed from MAIN-001's required launch scope, reserved for
-  revision. Code path retained, unchanged, ready to run on request — no
-  implementation change, documentation-only revision per explicit
-  instruction not to implement/launch this round.
-- `IMPLEMENTATION_STATUS.md` and `TODO.md` updated accordingly.
+## 2026-07-04 — rounds 4 to 8
 
-## 2026-07-04 (round 5)
+- Round 4. Framing confirmed (the study evaluates an evaluation methodology, with ROVA as its object); no manuscript
+  text existed yet. A minimum-evidence review (internal note) assessed each intended claim on its own evidence
+  needs, independently of the frozen protocol and of the work already done: a required set, the DP-oracle
+  validation as an appendix item, ablations, RL baseline and clairvoyant threshold as future work (as in round 3),
+  and one new finding — the distribution-shift evaluation supports none of the claims in the target sentence. The
+  manifest (rev. 4) therefore moved distribution shift out of MAIN-001's required launch scope and reserved it for
+  revision; its code path was kept unchanged.
+- Round 5. A claim-granularity review (internal note) traced each design choice to the intended claim. The author
+  resolved its one open question: no located crossover point is claimed, only that the verdict changes across the
+  operating-cost spectrum. The cost-ratio grid was re-derived from that claim: 5 points is the smallest grid at which
+  a permutation-style test of a non-random pattern across grid points can reach p < 0.05 (best case p = 2/n!:
+  0.083 for n = 4, 0.017 for n = 5); per-point power needs no more points (PILOT-001 effects are well resolved at 60
+  seeds); placement is geometric across the existing range. `COST_RATIO_GRID` changed from
+  `[0.5, 1.0, 2.0, 3.33, 5.0, 10.0, 20.0]` to `[0.5, 1.5, 3.5, 8.0, 20.0]`. The regression run caught a bug:
+  `SHIFT_COST_RATIO = 3.33` no longer matched a grid point and the deferred distribution-shift step waited
+  indefinitely; fixed to 3.5 and re-run cleanly (63/63 units). Manifest → rev. 5. MAIN-001 compute fell from 126 h
+  to 90 h single-threaded (about 3–6 h wall-clock in parallel); nothing had yet run at full scale.
+- Round 6. Target journal changed to IEEE Access. The excluded items were re-assessed against its criteria
+  (technical soundness, adequate evidence, reproducibility; not novelty-gated): the risk behind the ablation
+  contingency — that a novelty assessment would penalise an unattributed, expected result — is materially lower; no
+  other item's risk changed; no manifest change. One non-experimental risk was recorded: claims must be scoped to
+  the tested synthetic framework in the paper.
+- Round 7. `MAIN-001_EXECUTION_RUNBOOK.md`: operational runbook for the frozen rev. 5 campaign (45 units) — order,
+  sharding (N = min(15, cores)), checkpoint and resume, directory layout, archival (one `EXPERIMENT_INDEX.md` entry,
+  as for PILOT-001), logging, recovery, validation at about 25/50/100 %, final validation and 8 checkable completion
+  criteria. Distribution shift is not a completion criterion although the finalisation step attempts it.
+- Round 8. Reproducibility additions, none changing scope, claims or budget: the code was put under git and frozen
+  at `7f624ca27a86fbbbe67afc68ebb886a4edbb67a2` (runbook section 0.1 requires cloning this commit on the compute
+  host and verifying the hash); the Python version, `pip freeze` and `uname` are captured on the compute host at
+  launch (section 0.2); a zero-cost seed assertion (60 unique seeds, exactly 0..59), itself tested before it was prescribed, is
+  archived as `seeds_verified.json` (section 0.3). Sections 5, 9 and 10 now require `git_commit` in `config.json`,
+  `environment.txt` and `seeds_verified.json`.
 
-- Ran the claim-granularity audit requested (`CLAIM_GRANULARITY_AUDIT.md`):
-  traced each design choice (environment count/identity, cost-ratio grid
-  count/placement) to manuscript-sentence necessity vs. evidentiary-strength
-  choice vs. protocol inheritance. Flagged one genuine unresolved ambiguity:
-  whether the manuscript intends a located-crossover (c*) claim, which would
-  change the correct grid-density classification.
-- Author resolved the ambiguity: no located-crossover claim intended; the
-  claim is narrower ("verdict changes across the operating-cost spectrum").
-- Re-derived the cost-ratio grid from that weaker claim using statistical-
-  power/combinatorial reasoning: 5 points is the floor below which a
-  permutation-style test of "the pattern across grid points is non-random"
-  cannot reach p<0.05 even in the best case (exact best-case p=2/n!; n=4
-  gives 0.083, n=5 gives 0.017). Per-point power does not require more
-  points (PILOT-001 effect sizes already well-resolved at n=60 seeds vs.
-  noise). Placement: geometric spacing across the existing range, not
-  clustered near any presumed location.
-- **Implemented:** `environments.py` `COST_RATIO_GRID` changed from
-  `[0.5, 1.0, 2.0, 3.33, 5.0, 10.0, 20.0]` (7 points) to
-  `[0.5, 1.5, 3.5, 8.0, 20.0]` (5 points).
-- **Regression-tested** (Milestone Audit Protocol step 5): ran the full
-  pilot-budget pipeline end to end after the change. **Caught a real bug:**
-  `run_pipeline.py`'s `SHIFT_COST_RATIO = 3.33` no longer matched any grid
-  point, causing the (already revision-deferred) distribution-shift step to
-  wait indefinitely on a prerequisite that could never complete. Fixed to
-  `3.5` (nearest surviving point). Re-ran pilot: clean, 63/63 units
-  completed, no errors.
-- `EXPERIMENT_MANIFEST_FINAL.md` → rev. 5, `IMPLEMENTATION_STATUS.md`,
-  `TODO.md` updated. Consequence: MAIN-001 compute reduced from 126h to
-  90h single-threaded (~3-6h wall-clock parallelized) — first net compute
-  reduction to survive the full audit chain. No prior scientific conclusion
-  affected (nothing run at full scale yet).
+## 2026-07-08 — MAIN-001 execution
 
-## 2026-07-04 (round 6 — venue reassessment)
+- Executed per the runbook on the rev. 5 manifest at commit `7f624ca27a86fbbbe67afc68ebb886a4edbb67a2` (verified at
+  launch) on an AMD Ryzen 9 9950X (16 cores / 32 threads), CPU only. Pre-flight passed (grid
+  `[0.5, 1.5, 3.5, 8.0, 20.0]`, `SHIFT_COST_RATIO` 3.5, numpy/scipy, seeds 0..59, environment captured).
+- 15 shards, one work unit each, detached with `setsid`, BLAS/OMP threads pinned to 1 (scipy-openblas; prevents
+  15-way oversubscription); about 1 h wall-clock; no failures.
+- Results: 61/61 required completion entries; 45/45 HPO checkpoints with exactly 5 folds and finite regret and CVaR;
+  15/15 containment reports; DP oracle `certified_equivalent=true` (maximum discrepancy 4.5e-14). Statistics (BCa,
+  Wilcoxon + Cliff's δ + Holm per cost ratio, Friedman + Holm, CVaR, containment) computed. The ROVA-versus-baseline
+  verdict changed across the cost spectrum in all 3 environments.
+- Deviation (infrastructure; no effect on scientific data): `run_pipeline._mark_done` and `utils.save_json` update the
+  shared `manifest.json` without locking, and at 15 shards the live manifest lost updates (4/61 entries; the parallel
+  path had been tested only with 2 shards). Per-unit checkpoints are single-writer and were unaffected. On the
+  project's decision of 2026-07-08 ("continue + reconstruct"; `authorized_by` in `config.json`) the manifest was
+  rebuilt from the per-unit artifacts by `raw/rebuild_and_validate.py` (which validates the 61 required entries);
+  the raced file is kept as `raw/manifest.live_raced.json`. No change of scope, hyperparameters, environments, grid
+  or protocol; fixing the I/O path was left for later code.
+- The finalisation step also produced the distribution-shift reports for `rova` and `ewma` (optional; not a
+  completion criterion).
+- Archived in `experiments/MAIN-001_core_comparison/` (raw/, analysis.py, config.json, seeds.json, REPORT.md,
+  stats_summary.json) and registered in `EXPERIMENT_INDEX.md`; re-running `analysis.py` on `raw/` alone reproduced
+  the outputs byte for byte.
 
-- Target venue reassessed: IEEE Access, not TMLR. Produced
-  `IEEE_ACCESS_VENUE_FIT_ASSESSMENT.md`: re-evaluated every currently
-  excluded item against IEEE Access's actual bar (technical soundness +
-  adequate evidence + reproducibility, NOT novelty-gated). Finding: this
-  bar is lower/different than TMLR's on exactly the dimension that drove
-  the earlier Case-A/ablation contingency risk (novelty-sensitivity to an
-  "unattributed, expected" result) — that risk is materially reduced under
-  IEEE Access. No other excluded item's risk changes. **No manifest
-  changes required** — rev. 5 scope (45-unit MAIN-001) already sufficient.
-  One new, non-experimental risk surfaced: claims should be scoped to the
-  tested synthetic framework in the writeup (a writing task, not an
-  experimental gap).
+## 2026-07-09 to 2026-07-10 — ABLATION-001 execution and archival
 
-## 2026-07-04 (round 7 — execution runbook)
+- Branch `ablation-001` created from tag `main-001-frozen` (`7f624ca`), which was set on the MAIN-001 commit;
+  MAIN-001 was not modified (its archive re-verified 88/88 at every step).
+- FIX-1: `e_min` stays tunable in the `no_memory` and `no_decay` ablations because it feeds the propagation path
+  independently of memory and decay; checked by falsification (active in the coupled environments, exactly inert
+  — spread 0.0 — in the single-agent uncoupled one).
+- ABLATION-001 tooling (producing commit `4533c61`; tag `ablation-001-frozen`): driver
+  `run_ablation.py` with atomic per-shard manifests (FIX-5); read-only distributional-consistency validator
+  `validate_consistency.py`; DR3 descriptive analysis `dr3_attribution.py`; DR3 regime inference
+  `dr3_regime_inference.py`; all with tests.
+- DR3 method: the frozen per-cell test has no power at K_out = 5 (even a maximal signal cannot be flagged), and
+  pooling folds is pseudoreplication (folds are nested in cells, cells in 3 environments). A two-stage cell-level
+  analysis was specified in advance: Cliff's δ, environment-clustered inference, exact within-cell sign-flip
+  permutation (Option B primary, Option C sensitivity); effect sizes primary; Holm and BH both reported; "not
+  detected" is not "inert".
+- Executed as 15 shards under `systemd-run --user` (one transient service per cell, single-threaded BLAS), about
+  2 h 13 min, no failures. Structural audit passed (75/75 checkpoints, 375/375 folds). The consistency validator
+  (hard gate) passed 15/15: the ablation `full` branch agrees with archived MAIN-001 ROVA within Monte-Carlo noise.
+- Finding at the time: memory, propagation and stability are load-bearing in the high-cost regime where ROVA wins
+  (Cliff's δ > 0, environment-clustered interval excludes 0, BH-FDR significant); decay was not detected at this
+  budget; the contributing set differs by regime (H2, descriptive; permutation p ≤ 0.006). Containment (DR4) holds in
+  that regime (`prop_scale`/`stab_scale` bounded away from zero). Limitation: nothing survives Holm-FWER with about 6
+  cells per regime. The revision's factorial ablation (REV-001) reaches a different conclusion and supersedes this
+  finding.
+- Post-processing left `raw/` byte-identical (same digest before and after) and wrote derived analyses elsewhere.
+- Archived in `experiments/ABLATION-001_mechanism_attribution/` (raw/, analysis/, config.json, REPORT.md,
+  reproduce.sh, SHA256SUMS over 132 files, immutable tarball with `.sha256`) and registered in `EXPERIMENT_INDEX.md`;
+  the derived analyses regenerate from `raw/` at tag `ablation-001-frozen`, and the tarball and a fresh extraction
+  verify 132/132.
 
-- Produced `MAIN-001_EXECUTION_RUNBOOK.md`: pure operational runbook for
-  executing the frozen rev. 5 / 45-unit MAIN-001 campaign. No scope,
-  experiment, or protocol changes. Covers execution order, sharding
-  (N = min(15, cores)), checkpoint/resume procedure, expected directory
-  structure, artifact preservation (registers MAIN-001 as one
-  EXPERIMENT_INDEX.md entry per the PILOT-001 precedent), logging,
-  failure recovery, intermediate validation checkpoints (~25%/50%/100%),
-  final validation, and 8 explicit, checkable completion criteria.
-  Distribution-shift explicitly excluded from completion criteria
-  (revision-stage per frozen scope) even though the pipeline's finalization
-  step will attempt it automatically — its output, if produced, is
-  optional/bonus, not required.
+## 2026-09-29 — revision: protocol, deviation record, REV-001 plan and code
 
-## 2026-07-04 (round 8 — reproducibility audit)
+- The original internal evaluation protocol published verbatim (`docs/PRE_REGISTERED_PROTOCOL.md`; never registered
+  externally) with the deviation record (`docs/PREREGISTRATION_DEVIATIONS.md`): each commitment, what MAIN-001 and
+  ABLATION-001 executed, and what the revision restores.
+- Dated REV-001 analysis plan (`docs/REVISION_ANALYSIS_PLAN.md`), tagged `revision-001-analysis-plan` (`8dbb054`) with its initial version before any revision analysis ran. Its dated amendments, made
+  before execution, are logged in its section 10 and included at tag `revision-001-frozen`.
+- Revision code (`rova_revision/`) frozen at tag `revision-001-frozen` (`053a1fa`).
+- Correction: each method's evaluation worlds were seeded from a method-specific tag, so the published paired
+  comparisons did not pair worlds (deviation record, section 3). The revision re-runs the published analysis code
+  on matched worlds; archived files are not modified.
 
-- Reproducibility audit of 3 proposed runbook additions, none changing
-  scope/claims/budget:
-  1. Code version identifier: no git repo existed yet. Initialized one on
-     `code/` and created the frozen reference commit
-     `7f624ca27a86fbbbe67afc68ebb886a4edbb67a2`. Runbook section 0.1 now
-     requires cloning (not copying) this commit to the compute host and
-     verifying the hash before launch.
-  2. Execution environment capture: added runbook section 0.2 (capture
-     python version + pip freeze + uname on the actual compute host at
-     launch time -- explicitly not pre-populated from this sandbox).
-  3. Seed-set verification: added runbook section 0.3, a zero-cost
-     assertion (60 unique seeds, exactly 0..59) run before launch, output
-     archived as seeds_verified.json. Verified the check itself works
-     correctly before prescribing it.
-- Updated runbook sections 5 (archival must include git_commit in
-  config.json, environment.txt, seeds_verified.json), 9 (final validation
-  now checks all three), and 10 (completion criteria now include all
-  three) accordingly.
-- No experiments, analyses, statistical tests, or hyperparameter changes
-  introduced. Documentation/reproducibility-infrastructure only.
+## 2026-09-30 to 2026-10-01 — REV-001 execution
 
-## 2026-07-08 (MAIN-001 execution)
+- Executed on the lab workstation from `revision-001-frozen` with 15 workers, 2026-09-30 19:57 to 2026-10-01 08:54
+  (UTC+05:00). Environment gate and reproduction gate R0 passed; no failed units. Output archive SHA-256 `63dae057…`
+  (`experiments/REV-001_revision_analyses/`).
 
-- **Executed MAIN-001** per `MAIN-001_EXECUTION_RUNBOOK.md` on the frozen
-  rev. 5 manifest, code commit `7f624ca27a86fbbbe67afc68ebb886a4edbb67a2`
-  (verified at launch). Host: AMD Ryzen 9 9950X (16C/32T), CPU-only. Section 0
-  pre-flight passed (grid `[0.5,1.5,3.5,8.0,20.0]`, SHIFT_COST_RATIO 3.5,
-  numpy/scipy, seed-set 0..59, environment captured).
-- Launched 15 shards (`N=min(15,cores)`), one work-unit each, detached via
-  `setsid`, BLAS/OMP threads pinned to 1 (scipy-openblas — prevents 15-way
-  oversubscription). Wall-clock ≈ 1h; **zero `[FAIL]`**.
-- **Result:** 61/61 required completion entries; 45/45 HPO checkpoints at
-  exactly 5 folds with finite regret + CVaR; 15/15 containment reports;
-  DP-oracle `certified_equivalent=true` (max discrepancy 4.5e-14). Full stats
-  pass (BCa, Wilcoxon+Cliff's δ+Holm per cost-ratio, Friedman+Holm, CVaR,
-  containment) computed and saved. **Primary claim supported:** ROVA-vs-baseline
-  verdict changes across the cost spectrum in all 3 environments.
-- **Deviation (infrastructure, no scientific-data impact):** discovered a
-  lost-update race on the shared `manifest.json` — `run_pipeline._mark_done` +
-  `utils.save_json` do non-atomic/unlocked read-modify-write; at 15 shards the
-  live manifest lost updates (ended 4/61). Latent bug (parallel path validated
-  only at 2 shards previously). Per-unit checkpoints are single-writer and
-  unaffected. Reported to and resolved by user decision ("continue +
-  reconstruct"): manifest rebuilt deterministically from authoritative
-  artifacts (`raw/rebuild_and_validate.py`, validates 61 required while
-  assembling); raced file preserved as `raw/manifest.live_raced.json`.
-  **No scientific-scope, hyperparameter, environment, cost-grid, or protocol
-  change.** Root-cause fix of the IO path is a future code change, out of this
-  execution's scope.
-- Distribution-shift (`rova`, `ewma`) produced by the finalize step as an
-  optional/bonus artifact — revision-stage, not a completion criterion.
-- Archived to `experiments/MAIN-001_core_comparison/` (raw/, analysis.py,
-  config.json, seeds.json, REPORT.md, stats_summary.json); registered in
-  `EXPERIMENT_INDEX.md`; reproducibility verified (fresh `analysis.py` from
-  `raw/` alone → identical sha256).
+## 2026-10-01 — REV-002: plan, A1, A2
 
-## 2026-07-09 (ABLATION-001 execution) / 2026-07-10 (archival)
+- Dated REV-002 analysis plan (`docs/REVISION_002_ANALYSIS_PLAN.md`), tagged `revision-002-analysis-plan`
+  (`58affad`) before A1 or A2 ran; code tagged `revision-002-frozen` (`226186c`).
+- A2: fold-clustered re-analysis of the stored REV-001 per-world regrets, no simulation; a second run reproduced every
+  file byte for byte (`experiments/REV-002_A2_cluster_reanalysis/`).
+- A1: tuning convergence, executed on the lab workstation from `revision-002-frozen`, 2026-10-01 16:39 to 19:24
+  (UTC+05:00); no failed units. Output archive SHA-256 `35459e1e…` (`experiments/REV-002_A1_tuning_convergence/`).
 
-- Branched `ablation-001` from the frozen anchor tag `main-001-frozen`
-  (`7f624ca`); created that tag on the MAIN-001 commit. **MAIN-001 untouched
-  throughout** (archive re-verified 88/88 at every step).
-- **FIX-1:** kept `e_min` tunable in the `no_memory`/`no_decay` ablations — it
-  feeds the propagation path independently of the memory/decay switch. Verified
-  by falsification (active in coupled envs; **exactly** inert, spread 0.0, in
-  the single-agent uncoupled env).
-- Added ABLATION-001 tooling (producing commit `4533c61`, tag
-  `ablation-001-frozen`): standalone driver `run_ablation.py` with race-free
-  per-shard atomic manifests (FIX-5); read-only distributional-consistency
-  validator `validate_consistency.py`; DR3 descriptive `dr3_attribution.py`;
-  DR3 regime inference `dr3_regime_inference.py`. All with tests.
-- **DR3 method (design review):** the frozen per-cell test has *zero* power at
-  K_out=5 (verified: even a maximal signal is unflaggable); naive fold-pooling
-  is pseudoreplicative (folds nest in cells, cells in 3 environments). Adopted a
-  pre-specified two-stage cell-level analysis — Cliff's δ (scale-free),
-  environment-clustered inference, exact within-cell sign-flip permutation
-  (Option B primary + Option C sensitivity); effect sizes primary; Holm + BH
-  both reported; "not detected" ≠ "inert".
-- **Executed:** 15 shards via `systemd-run --user` (one isolated transient
-  service per cell, single-threaded BLAS, no oversubscription), ~2h13m, 15-way,
-  zero failures. Structural audit PASS (75/75 checkpoints, 375/375 folds).
-- **Consistency validator (hard gate): PASS 15/15** — ablation-`full` agrees
-  with archived MAIN-001 ROVA within Monte-Carlo noise (no harness drift).
-- **FINDING:** memory, propagation, and stability are load-bearing specifically
-  in the high-cost regime where ROVA wins (Cliff's δ>0, env-CI excludes 0,
-  BH-FDR significant); decay not detected at this budget; the contributing set
-  differs by regime (H2 descriptive, permutation p≤0.006) — the mechanistic
-  "why" for MAIN-001's cost-ratio-dependent verdict. Containment (DR4) passes in
-  the win regime (`prop_scale`/`stab_scale` bounded away from zero). Honest
-  ceiling: nothing survives Holm-FWER at ~6 cells/regime (design limit).
-- Post-processing kept raw byte-immutable (identical digest pre/post); all
-  derived analyses written to a new location.
-- Archived to `experiments/ABLATION-001_mechanism_attribution/` (raw/, analysis/,
-  config.json, REPORT.md, reproduce.sh, SHA256SUMS [132 files], immutable/
-  tarball + `.sha256`); registered in `EXPERIMENT_INDEX.md`; reproducibility
-  verified (raw immutable pre/post; derived regenerable from `raw/` at
-  `4533c61`; tarball + fresh extraction verify 132/132).
+## 2026-10-02 — exploratory post-run analysis P1
 
-## 2026-09-29 (revision: protocol, deviation record, REV-001 plan and code)
+- P1, a behavioural comparison with always-full-supervision, specified after the A1 and A2 results
+  (`docs/REVISION_002_POSTRUN_ANALYSES.md`) and reported as exploratory. It reads stored outputs only; commit
+  `f094e20` (`experiments/REV-002_P1_behaviour_a0/`).
 
-- Published the original internal evaluation protocol verbatim
-  (`docs/PRE_REGISTERED_PROTOCOL.md`; never registered externally) and the
-  deviation record (`docs/PREREGISTRATION_DEVIATIONS.md`): each commitment,
-  what MAIN-001 and ABLATION-001 executed, and what the revision restores.
-- Dated REV-001 analysis plan (`docs/REVISION_ANALYSIS_PLAN.md`), tagged
-  `revision-001-analysis-plan` (`8dbb054`) before any revision analysis was
-  executed; pre-execution amendments are logged in its section 10.
-- Revision code (`rova_revision/`), frozen at tag `revision-001-frozen`
-  (`053a1fa`).
-- **Correction:** each method's evaluation worlds were seeded from a
-  method-specific tag, so the published paired comparisons did not pair worlds
-  (deviation record, section 3). The revision re-runs the published analysis
-  code on matched worlds; archived files are not modified.
+## 2026-10-02 to 2026-10-03 — figures
 
-## 2026-09-30 to 2026-10-01 (REV-001 execution)
+- `rova_revision/paper_figures.py`: the paper's figures, drawn from the stored REV-001 and A1 tables (presentation
+  only).
 
-- Executed on the lab workstation from `revision-001-frozen` with 15 workers,
-  2026-09-30 19:57 to 2026-10-01 08:54 (UTC+05:00). Environment gate and
-  reproduction gate R0 passed; 0 failed units. Output archive SHA-256
-  `63dae057…` (`experiments/REV-001_revision_analyses/`).
+## 2026-10-06 — v2.0 release preparation
 
-## 2026-10-01 (REV-002: plan, A1, A2)
+- Revision outputs added under `experiments/`, indexed with digests and verification commands in
+  `experiments/REVISION_OUTPUTS.md`.
+- `.gitattributes`: files are checked out byte for byte, so the checksum manifests also verify on Windows checkouts
+  with `core.autocrlf` enabled (previously all 88 MAIN-001 and 132 ABLATION-001 entries failed there).
+- Documents written for v1.0, including the entries above this revision section, are kept as written; where the
+  revision analyses reach a different conclusion, they are superseded.
 
-- Dated REV-002 analysis plan (`docs/REVISION_002_ANALYSIS_PLAN.md`), tagged
-  `revision-002-analysis-plan` (`58affad`) before A1 or A2 was executed; code
-  tagged `revision-002-frozen` (`226186c`).
-- A2: fold-clustered re-analysis of the stored REV-001 per-world regrets, no
-  simulation; a second run reproduced every file byte for byte
-  (`experiments/REV-002_A2_cluster_reanalysis/`).
-- A1: tuning convergence, executed on the lab workstation from
-  `revision-002-frozen`, 2026-10-01 16:39 to 19:24 (UTC+05:00); 0 failed
-  units. Output archive SHA-256 `35459e1e…`
-  (`experiments/REV-002_A1_tuning_convergence/`).
+## 2026-10-15 — documentation cleanup
 
-## 2026-10-02 (exploratory post-run analysis P1)
-
-- P1, a behavioural comparison with always-full-supervision, specified after
-  the A1 and A2 results (`docs/REVISION_002_POSTRUN_ANALYSES.md`) and reported
-  as exploratory. Reads stored outputs only; commit `f094e20`
-  (`experiments/REV-002_P1_behaviour_a0/`).
-
-## 2026-10-02 to 2026-10-03 (figures)
-
-- `rova_revision/paper_figures.py`: the paper's figures drawn from stored
-  REV-001 and A1 tables (presentation only).
-
-## 2026-10-06 (v2.0 release preparation)
-
-- Revision outputs added under `experiments/`, indexed with digests and
-  verification commands in `experiments/REVISION_OUTPUTS.md`.
-- `.gitattributes`: files are checked out byte for byte, so the checksum
-  manifests also verify on Windows checkouts with `core.autocrlf` enabled
-  (previously all 88 MAIN-001 and 132 ABLATION-001 entries failed there).
-- Documents written for v1.0, including the entries above this revision
-  section, are kept as written; where the revision analyses reach a different
-  conclusion, they are superseded.
+- Wording of `docs/CHANGELOG.md`, `docs/EXPERIMENT_MANIFEST_FINAL.md`, `docs/HOSTILE_SELF_REVIEW.md` and
+  `docs/PROVENANCE_AUDIT.md` condensed; one factual correction in the manifest (the frozen grid has 5 points, not 7).
+- Licence of the Inter fonts bundled with the Figure 1 source added (`figures/LICENSE-Inter-OFL.txt`).
+- No archived output, checksum manifest or code behaviour changed. Not part of tag `v2.0`, which is
+  unchanged.

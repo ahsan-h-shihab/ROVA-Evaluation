@@ -179,8 +179,11 @@ the REV-001 output, `analysis/tables/verdicts.csv`.
 
 The documents written for v1.0 (the experiment index entries and reports of
 MAIN-001, PILOT-001 and ABLATION-001, `docs/HOSTILE_SELF_REVIEW.md` and
-`docs/RELEASE_NOTES_v1.0.md`) are kept as written. Where the revision analyses
-reach a different conclusion, those documents are superseded.
+`docs/RELEASE_NOTES_v1.0.md`) keep their content; `docs/CHANGELOG.md`,
+`docs/EXPERIMENT_MANIFEST_FINAL.md`, `docs/HOSTILE_SELF_REVIEW.md` and
+`docs/PROVENANCE_AUDIT.md` were condensed on 2026-10-15 (each names its original
+text in tag `v1.0`). Where the revision analyses reach a different conclusion,
+those documents are superseded.
 
 ## License and citation
 

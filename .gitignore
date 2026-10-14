@@ -2,9 +2,6 @@
 __pycache__/
 *.py[cod]
 
-# Local assistant/session configuration (never publish)
-.claude/
-
 # OS artifacts
 .DS_Store
 Thumbs.db

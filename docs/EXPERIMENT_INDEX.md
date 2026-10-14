@@ -51,7 +51,7 @@ superseded; see `docs/PREREGISTRATION_DEVIATIONS.md` and
   parameter reduced.** Full detail: `experiments/PILOT-001_budget_sensitivity/REPORT.md`.
 - **Reproducibility:** Verified — `analysis.py` regenerates every reported
   number from `raw/*.json` and `../../code/` alone, in a fresh process, with
-  no dependence on conversation history or any other project state.
+  no dependence on any other project state.
 
 ## ABLATION-001
 - **Objective:** Mechanism attribution (DR3) — 75 nested-CV-HPO campaigns

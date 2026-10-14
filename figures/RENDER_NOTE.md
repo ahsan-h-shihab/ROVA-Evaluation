@@ -5,7 +5,7 @@ shipped figure assets live in the manuscript, not here.
 
 | Paper figure | Source here | Regenerates shipped asset? |
 |---|---|---|
-| Figure 1 (evolution) | `fig_evolution_v4_source.zip` (HTML + `render.py`, 600 dpi Playwright pipeline, bundled fonts) | Yes, fully |
+| Figure 1 (evolution) | `fig_evolution_v4_source.zip` (HTML + `render.py`, 600 dpi Playwright pipeline, bundled Inter fonts, SIL Open Font License 1.1: `LICENSE-Inter-OFL.txt`) | Yes, fully |
 | Figure 2 (methodology) | `fig2_methodology_v6.py` | Yes |
 | Figure 4 (transition) | `fig4_transition_v3.py` + `figure_data/fig4_transition.csv` | Yes, **with a dpi override** (see below) |
 | Figure 5 (attribution) | `fig5_attribution_v2.py` + `figure_data/fig5_attribution.csv` | Yes, **with a dpi override** (see below) |
