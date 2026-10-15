@@ -1,8 +1,9 @@
 # MAIN-001 Execution Runbook
 
 Scope: operational only. Executes the frozen rev. 5 manifest (45-unit core
-campaign, IEEE Access target, distribution-shift at revision-stage, all
-other deferred items remain future work). No experimental redesign.
+campaign; distribution shift deferred to the revision stage; all other
+deferred items remain future work). No experimental redesign.
+(Scope line reworded on 2026-10-16; original text in tag `v1.0`.)
 
 ## 0. Pre-flight checklist
 ```
@@ -50,7 +51,7 @@ If this fails: stop. Do not launch with an unverified seed set.
 environments.py). Per unit: static -> ewma -> rova -> containment (free).
 After all 15 units across all shards finish: DP-oracle validation
 (unfavorable_oscillation_uncoupled only), then distribution-shift
-(revision-stage, optional/bonus, not required for completion).
+(revision-stage, optional, not required for completion).
 
 ## 2. Parallel sharding strategy
 N = min(15, available cores). Freeze N before launch; do not change across

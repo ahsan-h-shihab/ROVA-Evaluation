@@ -1,4 +1,4 @@
-# ROVA_CCE — Reproducibility Package for the Execution-Derived Monotonicity Claims
+# Replay package for the execution-derived monotonicity claims
 
 This package lets an independent third party **verify or falsify** every
 execution-based claim about ROVA's authorization monotonicity, working only
@@ -89,7 +89,7 @@ archived pieces exactly as the original driver produced it
 - **per-trial world seed** `run_trial(cfg, policy, seed=s, tag=f"{cell}_out{i}_test")`
   — `tag` matches `nested_hpo.py:129` exactly.
 
-**Two independent self-checks make the replay trustworthy:**
+**Two independent self-checks validate the replay:**
 
 1. **Regret match.** The replayed mean outer-test regret is compared to the
    archived `test_mean_regret`. Verified match to `< 1e-9` on all 75 MAIN-001
@@ -124,12 +124,12 @@ band map consumes). `oversight_removed` additionally requires
 
 ---
 
-## Scope / honesty notes
+## Scope notes
 
 - The three **synthetic** scenarios (A1/A2/A3) are fixed input *test vectors*,
   not results; the scripts compute whether they violate. A3's sequence is
-  additionally re-derived by a deterministic search (rng seed 0) to show it is
-  not cherry-picked.
+  additionally re-derived by a deterministic search (rng seed 0): the pinned
+  sequence is the first one that this search finds.
 - **A3 on the tuned class:** the exact A3 sequence triggers a violation on the
   frozen `DTCOA` (binary stability penalty) but not on the default
   `DTCOATunable` (its continuous penalty does not cross the rounding threshold

@@ -1,6 +1,7 @@
 # Changelog
 
-The wording of this changelog was condensed on 2026-10-15. The text as first published is in tag
+The wording of this changelog was condensed on 2026-10-15 and revised on 2026-10-16. The text as
+first published is in tag
 `v1.0` for the entries up to 2026-07-10 (`docs/CHANGELOG.md`, git blob `baf9b4ef1f73dce939528057b7609c38601476bf`)
 and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f123ec133855ec3cfb16d6`).
 
@@ -35,7 +36,7 @@ and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f
 - PILOT-001 executed and archived: budget sensitivity over n_trials, K_out, K_in, seeds and grid density. All five
   tested reductions were rejected on the evidence
   ([`REPORT.md`](../experiments/PILOT-001_budget_sensitivity/REPORT.md)); no budget parameter changed.
-- `EXPERIMENT_MANIFEST_FINAL.md` frozen as the minimum campaign for the planned journal submission (round-3 scope).
+- `EXPERIMENT_MANIFEST_FINAL.md` frozen as the minimum campaign (round-3 scope).
 
 ## 2026-07-04 — rounds 4 to 8
 
@@ -56,11 +57,9 @@ and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f
   `SHIFT_COST_RATIO = 3.33` no longer matched a grid point and the deferred distribution-shift step waited
   indefinitely; fixed to 3.5 and re-run cleanly (63/63 units). Manifest → rev. 5. MAIN-001 compute fell from 126 h
   to 90 h single-threaded (about 3–6 h wall-clock in parallel); nothing had yet run at full scale.
-- Round 6. Target journal changed to IEEE Access. The excluded items were re-assessed against its criteria
-  (technical soundness, adequate evidence, reproducibility; not novelty-gated): the risk behind the ablation
-  contingency — that a novelty assessment would penalise an unattributed, expected result — is materially lower; no
-  other item's risk changed; no manifest change. One non-experimental risk was recorded: claims must be scoped to
-  the tested synthetic framework in the paper.
+- Round 6. Target journal changed to IEEE Access. The excluded items were re-assessed for that journal; none was
+  brought back into scope, and the rev. 5 manifest was kept unchanged. One writing requirement was recorded: claims
+  in the paper should be scoped to the tested synthetic framework.
 - Round 7. `MAIN-001_EXECUTION_RUNBOOK.md`: operational runbook for the frozen rev. 5 campaign (45 units) — order,
   sharding (N = min(15, cores)), checkpoint and resume, directory layout, archival (one `EXPERIMENT_INDEX.md` entry,
   as for PILOT-001), logging, recovery, validation at about 25/50/100 %, final validation and 8 checkable completion
@@ -68,7 +67,7 @@ and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f
 - Round 8. Reproducibility additions, none changing scope, claims or budget: the code was put under git and frozen
   at `7f624ca27a86fbbbe67afc68ebb886a4edbb67a2` (runbook section 0.1 requires cloning this commit on the compute
   host and verifying the hash); the Python version, `pip freeze` and `uname` are captured on the compute host at
-  launch (section 0.2); a zero-cost seed assertion (60 unique seeds, exactly 0..59), itself tested before it was prescribed, is
+  launch (section 0.2); a seed assertion (60 unique seeds, exactly 0..59), tested before it was added to the runbook, is
   archived as `seeds_verified.json` (section 0.3). Sections 5, 9 and 10 now require `git_commit` in `config.json`,
   `environment.txt` and `seeds_verified.json`.
 

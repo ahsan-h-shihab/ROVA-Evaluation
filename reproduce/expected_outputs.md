@@ -94,29 +94,29 @@ lifts authorization from 0 (human oversight) to 2.
 
 ---
 
-## C. Reproduction table — previous audit's execution-derived claims
+## C. Reproduction table — execution-derived claims
 
 Each row is exactly one of: **VERIFIED**, **PARTIALLY VERIFIED**,
 **NOT REPRODUCIBLE**, **REJECTED**. Evidence = the script + the field that
 produces it.
 
-| Previous audit claim | Reproduced? | Evidence |
-|----------------------|-------------|----------|
+| Claim | Reproduced? | Evidence |
+|-------|-------------|----------|
 | Narrow/formal monotone conservatism holds: authorization nondecreasing in trust with penalties fixed (0 violations) | **VERIFIED** | `replay_monotonicity.py` → `narrow_property.violations = 0` |
 | Boundedness: trust ∈ [0,1], authorization ∈ {0..5} | **VERIFIED** | `replay_monotonicity.py` → `boundedness_contraction.bounded = True` |
 | Trust contraction: worst Lipschitz ratio = 0.70 = max(α,γ) | **VERIFIED** | `replay_monotonicity.py` → `contraction_worst_ratio = 0.7000` |
 | A1 counterexample: 3-agent propagation release → trust 0.67372→0.66960, auth 2→3 | **VERIFIED** | `replay_monotonicity.py` → A1 event (both implementations) |
 | A2 counterexample: human oversight removed while trust falls (ESC True→False, auth 0→1) | **VERIFIED** | `replay_monotonicity.py` → A2, 2 events, `oversight_removed=True` (both implementations) |
 | A3 counterexample: single agent, own evidence worsens 0.429→0.359, trust down, auth 1→2 | **PARTIALLY VERIFIED** | `replay_monotonicity.py` → A3 = 1 on frozen `DTCOA`; = 0 on default `DTCOATunable` for that exact sequence (continuous penalty). Tuned-class stability violations shown instead in §B single-agent cells |
-| A3 sequence is not cherry-picked (independently re-derivable) | **VERIFIED** | `replay_monotonicity.py` → `A3_regenerated_sequence` (deterministic search, seed 0) |
+| A3 sequence is the first hit of a seeded random search (independently re-derivable) | **VERIFIED** | `replay_monotonicity.py` → `A3_regenerated_sequence` (deterministic search, seed 0) |
 | Penalties are evidence-driven and, when they release, drive the violation | **VERIFIED** | `replay_*` → every event shows `prop/stab_penalty_before > prop/stab_penalty` at the step authorization rises |
 | ≈27–28% of 75 tuned MAIN rova folds have penalty scale > 0.1 (prop 0.27, stab 0.28, both>0.1 = 6) | **VERIFIED** | `replay_archived_runs.py` → `tuned_penalty_stats_MAIN_rova` |
-| Prior report's stated limitation: *per-step authorization traces of the archived runs cannot be verified from the archived artifacts* | **REJECTED** | `replay_archived_runs.py` replays all 450 folds and finds **11 752** real violating agent-steps; the limitation no longer holds |
+| Previously stated limitation: *per-step authorization traces of the archived runs cannot be verified from the archived artifacts* | **REJECTED** | `replay_archived_runs.py` replays all 450 folds and finds **11 752** real violating agent-steps; the limitation no longer holds |
 | The evaluated policies actually exhibit the non-monotonicity in archived MAIN-001 runs | **VERIFIED** | `replay_archived_runs.py` → MAIN-001: 2 366 agent-steps across 8 cells |
 | … and in archived ABLATION-001 runs | **VERIFIED** | `replay_archived_runs.py` → ABLATION-001: 9 386 agent-steps across 15 cells, all 5 branches |
 | Replay reproduces the archived regret (world reconstruction is exact) | **VERIFIED** | `replay_archived_runs.py` → 450/450 folds `regret_match=True` (<1e-9); 0 recon mismatches |
 
-## D. Hostile-review caveats (bounds on what the numbers mean)
+## D. Interpretation caveats (bounds on what the numbers mean)
 
 These do not change any count above; they bound its interpretation.
 
@@ -129,11 +129,11 @@ These do not change any count above; they bound its interpretation.
    | unfavorable_oscillation_uncoupled | 0 | 36 | 1 | **0** | **0** |
    | collapse_moderate_coupled | 594 | 114 | 113 | **0** | **0** |
 
-   At c=8.0 and c=20.0 — the high-cost regime where ROVA is claimed to win —
+   At c=8.0 and c=20.0 — the high-cost regime in which the original analysis reported ROVA ahead —
    the deployed policy shows **zero** violations, because tuning drives its
    penalty scales toward zero there (calibrated conservatism). The 2 366 total
    is real but regime-localized, and ~45% of it is a single cell
-   (favorable, c=1.5). The combined 11 752 is inflated by re-tuned **ablation**
+   (favorable, c=1.5). The combined 11 752 includes re-tuned **ablation**
    branches, which are not the deployed policy.
 
 2. **`no_memory` "trust" is raw evidence.** In the `no_memory` ablation
@@ -152,7 +152,7 @@ These do not change any count above; they bound its interpretation.
    deliberately reports only the mechanical fact and leaves the
    sentence-by-sentence verdict, which is interpretation-dependent, to the reader.
 
-### Claims deliberately NOT in this table
+### Claims not covered by this table
 
 - *"No reported empirical result depends on the false property"* and the
   manuscript claim-strength verdicts (VERIFIED/FALSIFIED labels on specific

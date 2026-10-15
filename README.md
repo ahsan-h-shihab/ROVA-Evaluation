@@ -4,7 +4,7 @@
 |---|---|
 | **Repository** | ROVA-Evaluation — evaluation artifacts and reproducibility package |
 | **Paper** | IEEE Access (submission under review, 2026) |
-| **Release** | v2.0.1 (v2.0, the revision release, with documentation corrections and the bundled-font licence; v1.0 accompanied the original submission) |
+| **Release** | v2.0.1: v2.0 (the revision release) with documentation corrections and the font licence; v1.0 accompanied the original submission |
 | **License** | MIT; the Inter font files bundled with the Figure 1 source: SIL Open Font License 1.1 |
 | **DOI** | To be assigned on Zenodo at this release |
 
@@ -83,8 +83,8 @@ root and run the replay scripts directly.
 ## Environment
 
 * Python **3.13.14** (archived interpreter; see
-  `experiments/MAIN-001_core_comparison/raw/environment.txt` for the complete
-  frozen freeze, including the host kernel).
+  `experiments/MAIN-001_core_comparison/raw/environment.txt` for the full
+  package list and the host kernel).
 * `pip install -r requirements.txt` installs the exact pinned versions
   (numpy 2.5.1, scipy 1.18.0, matplotlib 3.11.0, and transitive pins).
 * The replay package needs **numpy only**; no network, no GPU.
@@ -120,7 +120,7 @@ Four levels, fastest first:
 4. **Full re-run** — the complete nested cross-validation campaigns:
    see `docs/MAIN-001_EXECUTION_RUNBOOK.md` for the exact launch, resume, and
    archival commands. The core comparison (45 tuning units, 15 shards) took
-   about one hour of CPU wall-clock on a 16-core AMD Ryzen 9 9950X
+   about one hour of wall-clock time on a 16-core AMD Ryzen 9 9950X
    (59 GiB RAM, Ubuntu), single-threaded shards, no GPU.
 
 ## Verdict tables (v1 archived vs v2 corrected)
@@ -154,8 +154,8 @@ the REV-001 output, `analysis/tables/verdicts.csv`.
 * `PILOT-001` is a budget-sensitivity pilot that predates the freeze tooling of
   the two main experiments; it ships its config, seeds, raw outputs, and report
   but has no per-run environment freeze or checksum manifest of its own.
-* Candid self-audits of provenance and limitations are in
-  `docs/PROVENANCE_AUDIT.md` and `docs/HOSTILE_SELF_REVIEW.md`.
+* Audits of provenance and limitations are in `docs/PROVENANCE_AUDIT.md`
+  and `docs/HOSTILE_SELF_REVIEW.md`.
 
 ## Revision analyses (REV-001, REV-002)
 
@@ -178,12 +178,11 @@ the REV-001 output, `analysis/tables/verdicts.csv`.
   outputs.
 
 The documents written for v1.0 (the experiment index entries and reports of
-MAIN-001, PILOT-001 and ABLATION-001, `docs/HOSTILE_SELF_REVIEW.md` and
-`docs/RELEASE_NOTES_v1.0.md`) keep their content; `docs/CHANGELOG.md`,
-`docs/EXPERIMENT_MANIFEST_FINAL.md`, `docs/HOSTILE_SELF_REVIEW.md` and
-`docs/PROVENANCE_AUDIT.md` were condensed on 2026-10-15 (each names its original
-text in tag `v1.0`). Where the revision analyses reach a different conclusion,
-those documents are superseded.
+MAIN-001, PILOT-001 and ABLATION-001, and `docs/RELEASE_NOTES_v1.0.md`) keep
+their content. `docs/CHANGELOG.md`, `docs/EXPERIMENT_MANIFEST_FINAL.md`,
+`docs/HOSTILE_SELF_REVIEW.md` and `docs/PROVENANCE_AUDIT.md` were condensed;
+each names its original text by tag and git blob. Where the revision analyses
+reach a different conclusion, these documents are superseded.
 
 ## License and citation
 
