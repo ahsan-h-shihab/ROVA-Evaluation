@@ -4,8 +4,8 @@
 |---|---|
 | **Repository** | ROVA-Evaluation — evaluation artifacts and reproducibility package |
 | **Paper** | IEEE Access (submission under review, 2026) |
-| **Release** | v2.0 (revision release; v1.0 accompanied the original submission) |
-| **License** | MIT |
+| **Release** | v2.0.1 (v2.0, the revision release, with documentation corrections and the bundled-font licence; v1.0 accompanied the original submission) |
+| **License** | MIT; the Inter font files bundled with the Figure 1 source: SIL Open Font License 1.1 |
 | **DOI** | To be assigned on Zenodo at this release |
 
 Evaluation artifacts, frozen reference implementation, raw experiment outputs, and
@@ -187,5 +187,7 @@ those documents are superseded.
 
 ## License and citation
 
-MIT — see [LICENSE](LICENSE). To cite the software or the paper, see
+MIT — see [LICENSE](LICENSE). The Inter font files inside `figures/fig_evolution_v4_source.zip` are
+third-party and licensed under the SIL Open Font License 1.1 — see
+[`figures/LICENSE-Inter-OFL.txt`](figures/LICENSE-Inter-OFL.txt). To cite the software or the paper, see
 [CITATION.cff](CITATION.cff). Questions and issues: please open a GitHub issue.

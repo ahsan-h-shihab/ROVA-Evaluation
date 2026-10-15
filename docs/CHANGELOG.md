@@ -180,4 +180,4 @@ and in tag `v2.0` for the entries from 2026-09-29 (git blob `971fb5f136289e5fc6f
   `docs/PROVENANCE_AUDIT.md` condensed; one factual correction in the manifest (the frozen grid has 5 points, not 7).
 - Licence of the Inter fonts bundled with the Figure 1 source added (`figures/LICENSE-Inter-OFL.txt`).
 - No archived output, checksum manifest or code behaviour changed. Not part of tag `v2.0`, which is
-  unchanged.
+  unchanged; released as v2.0.1.
