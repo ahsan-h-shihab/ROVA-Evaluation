@@ -38,38 +38,47 @@ two dated analysis plans, the revision code and its checksummed outputs (see
 
 ## Study workflow
 
-The stages of the study in chronological order, with the tag, commit or output
-archive of each. P1 (dashed) is exploratory; it was specified after the A1 and
-A2 results.
+The stages of the study in chronological order, with the tag of each tagged
+stage; commits are listed in the table below and output archives in
+[`experiments/REVISION_OUTPUTS.md`](experiments/REVISION_OUTPUTS.md). P1
+(dashed) is exploratory; it was specified after the A1 and A2 results.
 
 ```mermaid
-flowchart TD
-  subgraph orig["Original study (release v1.0)"]
-    PILOT["PILOT-001<br/>budget-sensitivity pilot"]
-    MAIN["MAIN-001<br/>core cost-ratio comparison<br/>tag main-001-frozen"]
-    ABL["ABLATION-001<br/>mechanism attribution<br/>tag ablation-001-frozen"]
+%%{init: {"flowchart": {"nodeSpacing": 18, "rankSpacing": 30, "padding": 8, "diagramPadding": 8, "subGraphTitleMargin": {"top": 4, "bottom": 10}}}}%%
+flowchart TB
+  subgraph orig["Original Study"]
+    direction LR
+    PILOT["<b>PILOT-001</b><br/>Budget-sensitivity pilot"]
+    MAIN["<b>MAIN-001</b><br/>Core cost-ratio comparison<br/><i>main-001-frozen</i>"]
+    ABL["<b>ABLATION-001</b><br/>Mechanism attribution<br/><i>ablation-001-frozen</i>"]
     PILOT --> MAIN --> ABL
   end
-  subgraph rev["Revision (releases v2.0, v2.0.1)"]
-    PLAN1["REV-001 analysis plan<br/>tag revision-001-analysis-plan<br/>dated 2026-09-29"]
-    REV1["REV-001 revision analyses<br/>tag revision-001-frozen<br/>archive 63dae057…"]
-    PLAN2["REV-002 analysis plan<br/>tag revision-002-analysis-plan<br/>dated 2026-10-01"]
-    A1["A1 tuning convergence<br/>tag revision-002-frozen<br/>archive 35459e1e…"]
-    A2["A2 cluster re-analysis<br/>tag revision-002-frozen"]
-    P1["P1 post-run behavioural comparison<br/>exploratory · commit f094e20"]
+
+  subgraph rev["Revision Study"]
+    direction LR
+    PLAN1["<b>REV-001 plan</b><br/><i>revision-001-analysis-plan</i>"]
+    REV1["<b>REV-001</b><br/>Revision analyses<br/><i>revision-001-frozen</i>"]
+    PLAN2["<b>REV-002 plan</b><br/><i>revision-002-analysis-plan</i>"]
+    A1["<b>A1</b><br/>Tuning convergence<br/><i>revision-002-frozen</i>"]
+    A2["<b>A2</b><br/>Cluster re-analysis<br/><i>revision-002-frozen</i>"]
+    P1["<b>P1 · exploratory</b><br/>Post-run behavioural<br/>comparison"]
     PLAN1 --> REV1 --> PLAN2
     PLAN2 --> A1
     PLAN2 --> A2
     A1 --> P1
     A2 --> P1
   end
-  ABL --> PLAN1
-  classDef plan fill:#eef3fb,stroke:#4a6fa5,color:#1f2328;
-  classDef run fill:#f2f7ec,stroke:#5b8a3a,color:#1f2328;
-  classDef explore fill:#fbf6ea,stroke:#a8842c,stroke-dasharray: 4 3,color:#1f2328;
-  class PLAN1,PLAN2 plan;
+
+  orig -- "MAIN-001 and<br/>ABLATION-001 results<br/>→ REV-001 plan" --> rev
+
+  classDef run fill:#f2f7ec,stroke:#5b8a3a,stroke-width:1.5px,color:#1f2328;
+  classDef plan fill:#eef3fb,stroke:#4a6fa5,stroke-width:1.5px,color:#1f2328;
+  classDef explore fill:#fff8e6,stroke:#a8842c,stroke-width:2px,stroke-dasharray:6 4,color:#1f2328;
   class PILOT,MAIN,ABL,REV1,A1,A2 run;
+  class PLAN1,PLAN2 plan;
   class P1 explore;
+  style orig fill:none,stroke:#8c959f,stroke-width:1px;
+  style rev fill:none,stroke:#8c959f,stroke-width:1px;
 ```
 
 ## Frozen experiment tags
