@@ -1,5 +1,10 @@
 # ROVA-Evaluation
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23404968.svg)](https://doi.org/10.5281/zenodo.23404968)
+[![Release](https://img.shields.io/github/v/release/ahsan-h-shihab/ROVA-Evaluation)](https://github.com/ahsan-h-shihab/ROVA-Evaluation/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](requirements.txt)
+
 | | |
 |---|---|
 | **Repository** | ROVA-Evaluation — evaluation artifacts and reproducibility package |
@@ -24,6 +29,49 @@ revision, the original internal evaluation protocol, the deviation record,
 two dated analysis plans, the revision code and its checksummed outputs (see
 [Revision analyses](#revision-analyses-rev-001-rev-002)).
 
+**Contents:** [Study workflow](#study-workflow) · [Frozen experiment tags](#frozen-experiment-tags) ·
+[Figures from the revision archives](#figures-from-the-revision-archives) ·
+[Repository layout](#repository-layout) · [Environment](#environment) ·
+[Verifying the paper's claims](#verifying-the-papers-claims) ·
+[Verdict tables](#verdict-tables-v1-archived-vs-v2-corrected) ·
+[Revision analyses](#revision-analyses-rev-001-rev-002) · [License and citation](#license-and-citation)
+
+## Study workflow
+
+The stages of the study in chronological order, with the tag, commit or output
+archive of each. P1 (dashed) is exploratory; it was specified after the A1 and
+A2 results.
+
+```mermaid
+flowchart TD
+  subgraph orig["Original study (release v1.0)"]
+    PILOT["PILOT-001<br/>budget-sensitivity pilot"]
+    MAIN["MAIN-001<br/>core cost-ratio comparison<br/>tag main-001-frozen"]
+    ABL["ABLATION-001<br/>mechanism attribution<br/>tag ablation-001-frozen"]
+    PILOT --> MAIN --> ABL
+  end
+  subgraph rev["Revision (releases v2.0, v2.0.1)"]
+    PLAN1["REV-001 analysis plan<br/>tag revision-001-analysis-plan<br/>dated 2026-09-29"]
+    REV1["REV-001 revision analyses<br/>tag revision-001-frozen<br/>archive 63dae057…"]
+    PLAN2["REV-002 analysis plan<br/>tag revision-002-analysis-plan<br/>dated 2026-10-01"]
+    A1["A1 tuning convergence<br/>tag revision-002-frozen<br/>archive 35459e1e…"]
+    A2["A2 cluster re-analysis<br/>tag revision-002-frozen"]
+    P1["P1 post-run behavioural comparison<br/>exploratory · commit f094e20"]
+    PLAN1 --> REV1 --> PLAN2
+    PLAN2 --> A1
+    PLAN2 --> A2
+    A1 --> P1
+    A2 --> P1
+  end
+  ABL --> PLAN1
+  classDef plan fill:#eef3fb,stroke:#4a6fa5,color:#1f2328;
+  classDef run fill:#f2f7ec,stroke:#5b8a3a,color:#1f2328;
+  classDef explore fill:#fbf6ea,stroke:#a8842c,stroke-dasharray: 4 3,color:#1f2328;
+  class PLAN1,PLAN2 plan;
+  class PILOT,MAIN,ABL,REV1,A1,A2 run;
+  class P1 explore;
+```
+
 ## Frozen experiment tags
 
 Every experiment was executed against a tagged, frozen commit of the code in
@@ -42,7 +90,42 @@ below are annotated and are the ones cited in the paper (Appendix D.1):
 `git checkout <tag>` gives the exact code state used for the corresponding
 stage.
 
+## Figures from the revision archives
+
+The two images below are analysis outputs written by the revision code into
+its archived, checksummed outputs. They are copied here byte for byte; the
+paper's figures are drawn separately by `rova_revision/paper_figures.py` from
+the stored REV-001 and A1 tables. The outputs and their verification are
+indexed in [`experiments/REVISION_OUTPUTS.md`](experiments/REVISION_OUTPUTS.md).
+
+![Mean regret on the common evaluation worlds against the cost ratio, three environments](docs/assets/cew_regret_vs_cost_ratio.png)
+
+*Archived REV-001 analysis output.* Mean regret on the common evaluation worlds
+(CEW) against the cost ratio c (log scale), with BCa 95% intervals, in each of
+the three environments, for A0 (always full supervision, level 0), A5 (always
+high autonomy, level 5), static, ewma, rova, learned, qlearn and clairvoyant.
+Written by `rova_revision/analysis.py`.
+
+![Best inner-validation regret against the number of TPE candidates, 15 cells](docs/assets/A1_convergence_curves.png)
+
+*Archived REV-002 A1 analysis output.* For each of the 15 cells (three
+environments × five cost ratios): best inner-validation regret so far (mean
+over outer folds, log scale) against the number of TPE candidates, up to 320,
+for static, ewma and rova. Dashed points show the archived random-search
+tuning results at 20, 40 and 80 candidates; dotted vertical lines mark 80 and
+160 candidates. Written by `rova_revision/a1_analysis.py`.
+
+| README image | Archive | Path in archive | SHA-256 |
+|---|---|---|---|
+| `docs/assets/cew_regret_vs_cost_ratio.png` | `experiments/REV-001_revision_analyses/revision_out.tar.gz` | `revision_out/analysis/figures/cew_regret_vs_cost_ratio.png` | `06059a20f21fe19581a22233454b8d3d539f381cd58a08e7ea24041e489847cb` |
+| `docs/assets/A1_convergence_curves.png` | `experiments/REV-002_A1_tuning_convergence/a1_out.tar.gz` | `a1_out/analysis/figures/A1_convergence_curves.png` | `2f0ef24d23e75828a113d8eb3e29634888b336f71ab22b34db4858ffffba8dd9` |
+
+Each SHA-256 matches the file's entry in its archive's `SHA256SUMS`.
+
 ## Repository layout
+
+<details>
+<summary>Directory overview</summary>
 
 ```
 dtcoa_val/                frozen reference implementation (simulator, framework,
@@ -71,8 +154,10 @@ figures/                  sources for the paper's data figures (see RENDER_NOTE)
 docs/                     experiment index, manifest, execution runbook,
                           changelog, provenance audits, release notes;
                           original internal protocol, deviation record,
-                          revision analysis plans
+                          revision analysis plans; README figures (assets/)
 ```
+
+</details>
 
 Layout note: the archived replay scripts in `reproduce/` were written inside a
 tree where the code lived at `code/dtcoa_val`. The repository provides a
@@ -96,6 +181,13 @@ root and run the replay scripts directly.
 ## Verifying the paper's claims
 
 Four levels, fastest first:
+
+| Level | What it checks | Entry point |
+|---|---|---|
+| 1. Integrity | checksums over the raw MAIN-001 (88 files) and ABLATION-001 (132 files) artifacts | `sha256sum -c` (below) |
+| 2. Replay | the execution-derived claims, recomputed from the archived configs and seeds | `bash reproduce/reproduce.sh`; expected numbers in [`reproduce/expected_outputs.md`](reproduce/expected_outputs.md) |
+| 3. Revision outputs | archive digests, stage verifiers and checksum manifests for REV-001, A1, A2 and P1 | [`experiments/REVISION_OUTPUTS.md`](experiments/REVISION_OUTPUTS.md) |
+| 4. Full re-run | the complete nested cross-validation campaigns | [`docs/MAIN-001_EXECUTION_RUNBOOK.md`](docs/MAIN-001_EXECUTION_RUNBOOK.md) |
 
 1. **Integrity** — checksums over the raw artifacts:
    ```bash
@@ -190,3 +282,19 @@ MIT — see [LICENSE](LICENSE). The Inter font files inside `figures/fig_evoluti
 third-party and licensed under the SIL Open Font License 1.1 — see
 [`figures/LICENSE-Inter-OFL.txt`](figures/LICENSE-Inter-OFL.txt). To cite the software or the paper, see
 [CITATION.cff](CITATION.cff). Questions and issues: please open a GitHub issue.
+
+BibTeX for the archived software release (v2.0.1):
+
+```bibtex
+@software{shihab_rova_evaluation_2026,
+  author    = {Shihab, Ahsan Habib and Mansurova, Madina and Kozierkiewicz, Adrianna and
+               Mussa, Aman and Sarsembayeva, Talshyn},
+  title     = {{ROVA-Evaluation: circularity-controlled evaluation artifacts for runtime
+               governance of agentic AI}},
+  version   = {2.0.1},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23404968},
+  url       = {https://github.com/ahsan-h-shihab/ROVA-Evaluation}
+}
+```
