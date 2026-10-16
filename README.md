@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Repository** | ROVA-Evaluation — evaluation artifacts and reproducibility package |
-| **Paper** | IEEE Access (submission under review, 2026) |
+| **Paper** | IEEE Access (revision in preparation, 2026) |
 | **Release** | v2.0.1: v2.0 (the revision release) with documentation corrections and the font licence; v1.0 accompanied the original submission |
 | **License** | MIT; the Inter font files bundled with the Figure 1 source: SIL Open Font License 1.1 |
 | **DOI** | [10.5281/zenodo.23404968](https://doi.org/10.5281/zenodo.23404968) (v2.0.1); all versions: [10.5281/zenodo.23404967](https://doi.org/10.5281/zenodo.23404967) |
@@ -19,7 +19,7 @@ reproducibility materials for:
 > **The Verdict Is in the Protocol: A Circularity-Controlled, Cost-Ratio-Resolved
 > Evaluation of Runtime Governance for Agentic AI**
 > A. H. Shihab, M. Mansurova, A. Kozierkiewicz, A. Mussa, and T. Sarsembayeva.
-> IEEE Access (under review, 2026).
+> IEEE Access (revision in preparation, 2026).
 
 This repository is the artifact referenced by the paper's Reproducibility
 Statement (Appendix D). It contains the frozen code, the raw per-cell
