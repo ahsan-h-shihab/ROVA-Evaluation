@@ -6,7 +6,7 @@
 | **Paper** | IEEE Access (submission under review, 2026) |
 | **Release** | v2.0.1: v2.0 (the revision release) with documentation corrections and the font licence; v1.0 accompanied the original submission |
 | **License** | MIT; the Inter font files bundled with the Figure 1 source: SIL Open Font License 1.1 |
-| **DOI** | To be assigned on Zenodo at this release |
+| **DOI** | [10.5281/zenodo.23404968](https://doi.org/10.5281/zenodo.23404968) (v2.0.1); all versions: [10.5281/zenodo.23404967](https://doi.org/10.5281/zenodo.23404967) |
 
 Evaluation artifacts, frozen reference implementation, raw experiment outputs, and
 reproducibility materials for:

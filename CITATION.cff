@@ -26,6 +26,7 @@ authors:
     orcid: "https://orcid.org/0000-0001-7668-2640"
     affiliation: "Al-Farabi Kazakh National University"
 repository-code: "https://github.com/ahsan-h-shihab/ROVA-Evaluation"
+doi: 10.5281/zenodo.23404968
 license: MIT
 version: 2.0.1
 date-released: "2026-10-16"
